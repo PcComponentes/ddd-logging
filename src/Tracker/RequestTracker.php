@@ -10,7 +10,7 @@ class RequestTracker implements Tracker
     private const HEADER = 'header';
     private const REQUEST = 'request';
     private const QUERY = 'query';
-    private const ATTRIBUTE = 'query';
+    private const ATTRIBUTE = 'attribute';
 
     private $requestStack;
     private $attributeType;
