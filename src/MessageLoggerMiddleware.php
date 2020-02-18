@@ -1,43 +1,42 @@
 <?php
 declare(strict_types=1);
-namespace Pccomponentes\DddLogging;
+
+namespace PcComponentes\DddLogging;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
+use Symfony\Component\Messenger\Middleware\StackInterface;
 
-class MessageLoggerMiddleware implements MiddlewareInterface
+final class MessageLoggerMiddleware implements MiddlewareInterface
 {
-    private $logger;
-    private $tracker;
-    private $successSerialization;
-    private $exceptionSerialization;
+    private LoggerInterface $logger;
 
     public function __construct(
-        LoggerInterface $logger,
-        Tracker $tracker,
-        SuccessSerialization $successSerialization,
-        ExceptionSerialization $exceptionSerialization
+        LoggerInterface $logger
     ) {
         $this->logger = $logger;
-        $this->tracker = $tracker;
-        $this->successSerialization = $successSerialization;
-        $this->exceptionSerialization = $exceptionSerialization;
     }
 
-    public function handle($message, callable $next)
+    public function handle(Envelope $envelope, StackInterface $stack): Envelope
     {
-        $parentOperationId = $this->tracker->parentOperationId();
+        $message = $envelope->getMessage();
+        $context = [
+            'message' => $message,
+            'name' => $message::messageName(),
+        ];
 
         try {
-            $result = $next($message);
+            $result = $stack->next()->handle($envelope, $stack);
             $this->logger->info(
-                $this->successSerialization->message($parentOperationId, $message),
-                $this->successSerialization->context($parentOperationId, $message)
+                'A message has been processed "{name}"',
+                $context
             );
         } catch (\Throwable $e) {
+            $context['exception'] = $e;
             $this->logger->error(
-                $this->exceptionSerialization->message($parentOperationId, $message, $e),
-                $this->exceptionSerialization->context($parentOperationId, $message, $e)
+                'An exception occurred while processing the message "{name}"',
+                $context
             );
 
             throw $e;
