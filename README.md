@@ -1,4 +1,4 @@
-# DDD Logging V.1.0
+# DDD Logging
 Pequeño middleware para [messenger](https://symfony.com/doc/current/components/messenger.html), el bus de symfony, para loggear todo lo que ocurra durante la ejecución del resto de middlewares.
 Se sugiere que este middleware sea de los primeros en meterse en el bus.
 
