@@ -30,7 +30,8 @@
     "symfony/messenger": "^4.4",
     "symfony/http-foundation": "^4.4",
     "symfony/stopwatch": "^4.4",
-    "pccomponentes/apixception-bundle": "^1.0"
+    "pccomponentes/apixception-bundle": "^1.0",
+    "guzzlehttp/guzzle": "^6.5"
   },
   "require-dev": {
     "phpunit/phpunit": "^8.0",

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\ExecutionTime;
 
-use PcComponentes\Ddd\Util\Message\SimpleMessage;
+use Pccomponentes\Ddd\Util\Message\Message;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
 use Symfony\Component\Messenger\Middleware\StackInterface;
@@ -20,17 +20,7 @@ final class ExecutionTimeMiddleware implements MiddlewareInterface
 
     public function handle(Envelope $envelope, StackInterface $stack): Envelope
     {
-        $message = $envelope->getMessage();
-        if (false === $message instanceof SimpleMessage) {
-            throw new \InvalidArgumentException(
-                \sprintf(
-                    '%s only works with %s',
-                    self::class,
-                    SimpleMessage::class
-                )
-            );
-        }
-
+        $message = $this->messageFromEnvelope($envelope);
         $messageId = $message->messageId()->value();
 
         if (true === $this->stopwatch->isStarted($messageId)) {
@@ -42,5 +32,10 @@ final class ExecutionTimeMiddleware implements MiddlewareInterface
         $this->stopwatch->stop($messageId);
 
         return $envelope;
+    }
+
+    private function messageFromEnvelope(Envelope $envelope): Message
+    {
+        return $envelope->getMessage();
     }
 }

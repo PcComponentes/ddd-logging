@@ -7,11 +7,11 @@ use Monolog\Processor\ProcessorInterface;
 
 final class HostnameProcessor implements ProcessorInterface
 {
-    private $host;
+    private string $host;
 
     public function __construct()
     {
-        $this->host = gethostname();
+        $this->host = \gethostname();
     }
 
     public function __invoke(array $record): array

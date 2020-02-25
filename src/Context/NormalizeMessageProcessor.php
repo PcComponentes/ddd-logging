@@ -5,13 +5,9 @@ namespace PcComponentes\DddLogging\Context;
 
 use Monolog\Processor\ProcessorInterface;
 
-final class NormalizeContextProcessor implements ProcessorInterface
+final class NormalizeMessageProcessor implements ProcessorInterface
 {
-    /**
-     * @param  array $record
-     * @return array
-     */
-    public function __invoke(array $record)
+    public function __invoke(array $record): array
     {
         if (false === \array_key_exists('message', $record['context'])) {
             return $record;

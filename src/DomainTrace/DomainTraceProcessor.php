@@ -4,25 +4,20 @@ declare(strict_types=1);
 namespace PcComponentes\DddLogging\DomainTrace;
 
 use Monolog\Processor\ProcessorInterface;
-use PcComponentes\DddLogging\MessageTracker;
 
 final class DomainTraceProcessor implements ProcessorInterface
 {
-    private MessageTracker $messageTracker;
+    private Tracker $tracker;
 
-    public function __construct(MessageTracker $traceMarkerCommunicator)
+    public function __construct(Tracker $tracker)
     {
-        $this->messageTracker = $traceMarkerCommunicator;
+        $this->tracker = $tracker;
     }
 
-    /**
-     * @param  array $record
-     * @return array
-     */
-    public function __invoke(array $record)
+    public function __invoke(array $record): array
     {
-        $record['extra']['correlation_id'] = $this->messageTracker->correlationId();
-        $record['extra']['reply_to'] = $this->messageTracker->replyTo();
+        $record['extra']['correlation_id'] = $this->tracker->correlationId();
+        $record['extra']['reply_to'] = $this->tracker->replyTo();
 
         return $record;
     }

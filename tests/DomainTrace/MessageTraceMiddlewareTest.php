@@ -5,26 +5,26 @@ namespace PcComponentes\DddLogging\Tests\CorrelationId;
 
 use Pccomponentes\Ddd\Domain\Model\ValueObject\Uuid;
 use Pccomponentes\Ddd\Util\Message\Message;
-use PcComponentes\DddLogging\CorrelationId\AssignCorrelationIdMiddleware;
-use PcComponentes\DddLogging\MessageTracker;
+use PcComponentes\DddLogging\DomainTrace\MessageTraceMiddleware;
+use PcComponentes\DddLogging\DomainTrace\Tracker;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
 use Symfony\Component\Messenger\Middleware\StackInterface;
 
-final class AssignCorrelationIdMiddlewareTest extends TestCase
+final class MessageTraceMiddlewareTest extends TestCase
 {
     private MockObject $mockEnvelope;
     private MockObject $mockStack;
-    private MockObject $mockMessageTracker;
+    private MockObject $mockTracker;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->mockEnvelope = $this->createMock(Envelope::class);
         $this->mockStack = $this->createMock(StackInterface::class);
-        $this->mockMessageTracker = $this->createMock(MessageTracker::class);
+        $this->mockTracker = $this->createMock(Tracker::class);
     }
 
     public function testShouldFailNonExistingEnvelopeMessage()
@@ -34,9 +34,9 @@ final class AssignCorrelationIdMiddlewareTest extends TestCase
             ->method('getMessage')
             ->willReturn(null);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(\TypeError::class);
 
-        (new AssignCorrelationIdMiddleware($this->mockMessageTracker))
+        (new MessageTraceMiddleware($this->mockTracker))
             ->handle(
                 $this->mockEnvelope,
                 $this->mockStack
@@ -63,22 +63,22 @@ final class AssignCorrelationIdMiddlewareTest extends TestCase
             ->method('getMessage')
             ->willReturn($mockMessage);
 
-        $this->mockMessageTracker
+        $this->mockTracker
             ->expects($this->atLeastOnce())
             ->method('correlationId')
             ->willReturn(null);
 
-        $this->mockMessageTracker
+        $this->mockTracker
             ->expects($this->once())
             ->method('assignCorrelationId')
             ->with($toStringUuid);
 
-        $this->mockMessageTracker
+        $this->mockTracker
             ->expects($this->once())
             ->method('assignReplyTo')
             ->with($toStringUuid);
 
-        (new AssignCorrelationIdMiddleware($this->mockMessageTracker))
+        (new MessageTraceMiddleware($this->mockTracker))
             ->handle(
                 $this->mockEnvelope,
                 $this->mockStack
@@ -116,17 +116,17 @@ final class AssignCorrelationIdMiddlewareTest extends TestCase
             ->method('getMessage')
             ->willReturn($mockMessage);
 
-        $this->mockMessageTracker
+        $this->mockTracker
             ->expects($this->atLeastOnce())
             ->method('correlationId')
             ->willReturn($toStringUuid);
 
-        $this->mockMessageTracker
+        $this->mockTracker
             ->expects($this->once())
             ->method('assignReplyTo')
             ->with($toStringUuid);
 
-        (new AssignCorrelationIdMiddleware($this->mockMessageTracker))
+        (new MessageTraceMiddleware($this->mockTracker))
             ->handle(
                 $this->mockEnvelope,
                 $this->mockStack

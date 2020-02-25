@@ -11,11 +11,12 @@ use Symfony\Component\Messenger\Middleware\StackInterface;
 final class MessageLoggerMiddleware implements MiddlewareInterface
 {
     private LoggerInterface $logger;
+    private Action $action;
 
-    public function __construct(
-        LoggerInterface $logger
-    ) {
+    public function __construct(LoggerInterface $logger, Action $action)
+    {
         $this->logger = $logger;
+        $this->action = $action;
     }
 
     public function handle(Envelope $envelope, StackInterface $stack): Envelope
@@ -29,14 +30,14 @@ final class MessageLoggerMiddleware implements MiddlewareInterface
         try {
             $result = $stack->next()->handle($envelope, $stack);
             $this->logger->info(
-                'A message has been processed "{name}"',
-                $context
+                $this->action->success() . ' "{name}"',
+                $context,
             );
         } catch (\Throwable $e) {
             $context['exception'] = $e;
             $this->logger->error(
-                'An exception occurred while processing the message "{name}"',
-                $context
+                $this->action->error() . ' "{name}"',
+                $context,
             );
 
             throw $e;

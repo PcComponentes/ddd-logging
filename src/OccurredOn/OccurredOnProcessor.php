@@ -7,14 +7,10 @@ use Monolog\Processor\ProcessorInterface;
 
 final class OccurredOnProcessor implements ProcessorInterface
 {
-    /**
-     * @param  array $record
-     * @return array
-     */
-    public function __invoke(array $record)
+    public function __invoke(array $record): array
     {
-        $record['occurred_on'] = round(
-            microtime(true) * 1000
+        $record['occurred_on'] = \round(
+            \microtime(true) * 1000,
         );
 
         return $record;

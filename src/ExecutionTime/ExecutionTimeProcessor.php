@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace PcComponentes\DddLogging\ExecutionTime;
 
 use Monolog\Processor\ProcessorInterface;
-use PcComponentes\Ddd\Util\Message\SimpleMessage;
+use Pccomponentes\Ddd\Util\Message\Message;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 final class ExecutionTimeProcessor implements ProcessorInterface
@@ -18,12 +18,13 @@ final class ExecutionTimeProcessor implements ProcessorInterface
 
     public function __invoke(array $record): array
     {
-        if (false === array_key_exists('message', $record['context'])) {
+        if (false === \array_key_exists('message', $record['context'])) {
             return $record;
         }
 
         $message = $record['context']['message'];
-        if (false === $message instanceof SimpleMessage) {
+
+        if (false === $message instanceof Message) {
             return $record;
         }
 
@@ -32,14 +33,14 @@ final class ExecutionTimeProcessor implements ProcessorInterface
         return $record;
     }
 
-    private function getExecutionTime(SimpleMessage $message): float
+    private function getExecutionTime(Message $message): float
     {
         $duration = 0;
 
         try {
             $event = $this->stopwatch->getEvent(
-                $message->messageId()->value()
-            );
+                $message->messageId()->value(),
+                );
 
             $duration = $event->getDuration();
         } catch (\LogicException $exception) {
@@ -47,7 +48,7 @@ final class ExecutionTimeProcessor implements ProcessorInterface
 
         return \round(
             $duration / 1000,
-            6
+            6,
         );
     }
 }

@@ -21,9 +21,5 @@ final class MonologIteratorProcessor implements ProcessorInterface
         }
 
         return $record;
-
-//        return \array_reduce($this->processors, static function ($carry, callable $arg) {
-//            return $arg($carry);
-//        }, $records);
     }
 }

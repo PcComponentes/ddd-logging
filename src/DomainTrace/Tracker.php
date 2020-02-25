@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace PcComponentes\DddLogging;
+namespace PcComponentes\DddLogging\DomainTrace;
 
-final class MessageTracker
+final class Tracker
 {
     private ?string $correlationId;
     private ?string $replyTo;
