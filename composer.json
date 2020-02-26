@@ -24,7 +24,7 @@
   "require": {
     "php": "^7.4",
     "ext-json": "*",
-    "monolog/monolog": "^2.0",
+    "monolog/monolog": "^1.25",
     "pccomponentes/ddd": "^1.2",
     "symfony/http-kernel": "^4.4",
     "symfony/messenger": "^4.4",
