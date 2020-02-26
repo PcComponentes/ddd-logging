@@ -5,8 +5,8 @@ namespace PcComponentes\DddLogging\DomainTrace;
 
 final class Tracker
 {
-    private ?string $correlationId;
-    private ?string $replyTo;
+    private ?string $correlationId = null;
+    private ?string $replyTo = null;
 
     public function correlationId(): ?string
     {

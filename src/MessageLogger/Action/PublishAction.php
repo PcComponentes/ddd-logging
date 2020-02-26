@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace PcComponentes\DddLogging\Action;
+namespace PcComponentes\DddLogging\MessageLogger\Action;
 
-use PcComponentes\DddLogging\Action;
+use PcComponentes\DddLogging\MessageLogger\Action;
 
 final class PublishAction implements Action
 {
