@@ -21,8 +21,6 @@ final class DomainTraceMiddleware
                 );
 
                 return $handler($request, $options);
-        }
-
-        ;
+        };
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging;
 
+use Pccomponentes\Ddd\Util\Message\Message;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
@@ -21,7 +22,7 @@ final class MessageLoggerMiddleware implements MiddlewareInterface
 
     public function handle(Envelope $envelope, StackInterface $stack): Envelope
     {
-        $message = $envelope->getMessage();
+        $message = $this->messageFromEnvelope($envelope);
         $context = [
             'message' => $message,
             'name' => $message::messageName(),
@@ -44,5 +45,10 @@ final class MessageLoggerMiddleware implements MiddlewareInterface
         }
 
         return $result;
+    }
+
+    private function messageFromEnvelope(Envelope $envelope): Message
+    {
+        return $envelope->getMessage();
     }
 }

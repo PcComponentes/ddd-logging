@@ -7,25 +7,9 @@
          colors="true"
          bootstrap="tests/bootstrap.php"
 >
-    <php>
-        <ini name="error_reporting" value="-1" />
-        <server name="APP_ENV" value="test" force="true" />
-        <server name="SHELL_VERBOSITY" value="-1" />
-    </php>
-
     <testsuites>
         <testsuite name="Project Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory suffix=".php">src/*/Domain</directory>
-            <directory suffix=".php">src/*/Projection</directory>
-            <exclude>
-                <directory suffix=".php">src/Util</directory>
-            </exclude>
-        </whitelist>
-    </filter>
 </phpunit>
