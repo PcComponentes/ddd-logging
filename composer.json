@@ -1,6 +1,6 @@
 {
   "name": "pccomponentes/ddd-logging",
-  "description": "This is a package to unify the logs systems in the developments of Pccomponentes",
+  "description": "This is a package to unify the logs systems in the developments of PcComponentes",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -24,7 +24,7 @@
   "require": {
     "php": "^7.4",
     "ext-json": "*",
-    "monolog/monolog": "~1.19",
+    "monolog/monolog": "^2.0",
     "pccomponentes/ddd": "^1.2",
     "symfony/http-kernel": "^4.4",
     "symfony/messenger": "^4.4",
@@ -36,7 +36,7 @@
   "require-dev": {
     "phpunit/phpunit": "^8.0",
     "dg/bypass-finals": "^1.1",
-    "phpstan/phpstan": "^0.12.11",
+    "phpstan/phpstan": "^0.12",
     "pccomponentes/coding-standard": "^1.0"
   },
   "autoload": {
