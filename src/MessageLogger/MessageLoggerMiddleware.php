@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace PcComponentes\DddLogging;
+namespace PcComponentes\DddLogging\MessageLogger;
 
 use Pccomponentes\Ddd\Util\Message\Message;
 use Psr\Log\LoggerInterface;
