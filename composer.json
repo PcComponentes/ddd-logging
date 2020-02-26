@@ -1,33 +1,52 @@
 {
   "name": "pccomponentes/ddd-logging",
-  "description": "Added logging system to ddd mini framework",
+  "description": "This is a package to unify the logs systems in the developments of PcComponentes",
+  "type": "library",
+  "license": "MIT",
   "authors": [
     {
-      "name": "Juan G. Rodríguez Carrión",
-      "email": "juan.rodriguez@pccomponentes.com"
+      "name": "Zoilo Mora",
+      "email": "zoilo.mora@pccomponentes.com"
+    },
+    {
+      "name": "Aaron Bernabeu",
+      "email": "aaron.bernabeu@pccomponentes.com"
+    },
+    {
+      "name": "Alberto Vioque",
+      "email": "alberto.vioque@pccomponentes.com"
+    },
+    {
+      "name": "Jose R. Flores",
+      "email": "jose.flores@pccomponentes.com"
     }
   ],
-  "license": "MIT",
-  "type": "library",
+  "require": {
+    "php": "^7.4",
+    "ext-json": "*",
+    "monolog/monolog": "^2.0",
+    "pccomponentes/ddd": "^1.2",
+    "symfony/http-kernel": "^4.4",
+    "symfony/messenger": "^4.4",
+    "symfony/http-foundation": "^4.4",
+    "symfony/stopwatch": "^4.4",
+    "pccomponentes/apixception-bundle": "^1.0",
+    "guzzlehttp/guzzle": "^6.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.0",
+    "dg/bypass-finals": "^1.1",
+    "phpstan/phpstan": "^0.12",
+    "pccomponentes/coding-standard": "^1.0"
+  },
   "autoload": {
     "psr-4": {
-      "Pccomponentes\\DddLogging\\": "src/"
+      "PcComponentes\\DddLogging\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Pccomponentes\\DddLogging\\Tests\\": "tests/"
+      "PcComponentes\\DddLogging\\Tests\\": "tests/"
     }
-  },
-  "require": {
-    "symfony/messenger": "^4.1",
-    "symfony/http-foundation": "^4.1",
-    "psr/log": "^1.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "~7.0"
-  },
-  "suggest": {
-    "symfony/http-foundation": "To use Tracker implementation with symfony Request headers"
   }
 }
