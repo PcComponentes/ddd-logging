@@ -10,6 +10,10 @@ final class OccurredOnProcessor implements ProcessorInterface
 {
     public function __invoke(array $record): array
     {
+        if (false === \array_key_exists('message', $record['context'])) {
+            return $record;
+        }
+
         $message = $record['context']['message'];
 
         if ($message instanceof DomainEvent) {
@@ -23,8 +27,10 @@ final class OccurredOnProcessor implements ProcessorInterface
             return $record;
         }
 
-        $record['occurred_on'] = \round(
-            \microtime(true) * 1000,
+        $record['occurred_on'] = \intval(
+            \round(
+                \microtime(true) * 1000,
+            )
         );
 
         return $record;
