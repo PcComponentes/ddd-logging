@@ -32,13 +32,13 @@ final class MessageLoggerMiddleware implements MiddlewareInterface
             $result = $stack->next()->handle($envelope, $stack);
             $this->logger->info(
                 $this->action->success() . ' "{name}"',
-                $context,
+                $context
             );
         } catch (\Throwable $e) {
             $context['exception'] = $e;
             $this->logger->error(
                 $this->action->error() . ' "{name}"',
-                $context,
+                $context
             );
 
             throw $e;
