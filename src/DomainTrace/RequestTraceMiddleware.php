@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace PcComponentes\DddLogging\DomainTrace;
 
 use Pccomponentes\Ddd\Domain\Model\ValueObject\Uuid;
+use Pccomponentes\Ddd\Util\Message\Message;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Messenger\Envelope;
@@ -30,17 +31,24 @@ final class RequestTraceMiddleware implements MiddlewareInterface
             return $stack->next()->handle($envelope, $stack);
         }
 
+        $message = $this->messageFromEnvelope($envelope);
+
         $correlationId = $this->correlationIdFromRequest($request);
         if (null !== $correlationId) {
-            $this->tracker->assignCorrelationId($correlationId);
+            $this->tracker->assignCorrelationId($correlationId, $message->messageId());
         }
 
         $replyTo = $this->replyToFromRequest($request);
         if (null !== $replyTo) {
-            $this->tracker->assignReplyTo($replyTo);
+            $this->tracker->assignReplyTo($replyTo, $message->messageId());
         }
 
         return $stack->next()->handle($envelope, $stack);
+    }
+
+    private function messageFromEnvelope(Envelope $envelope): Message
+    {
+        return $envelope->getMessage();
     }
 
     private function assertCorrelationId(): void
@@ -54,12 +62,12 @@ final class RequestTraceMiddleware implements MiddlewareInterface
         );
     }
 
-    private function correlationIdFromRequest(Request $request): string
+    private function correlationIdFromRequest(Request $request): ?string
     {
         return $request->headers->get('x-correlation-id');
     }
 
-    private function replyToFromRequest(Request $request): string
+    private function replyToFromRequest(Request $request): ?string
     {
         return $request->headers->get('x-reply-to');
     }
