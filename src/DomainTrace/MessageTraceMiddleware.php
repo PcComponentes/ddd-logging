@@ -21,14 +21,8 @@ final class MessageTraceMiddleware implements MiddlewareInterface
     {
         $message = $this->messageFromEnvelope($envelope);
 
-        if (null === $this->tracker->correlationId()) {
-            $this->tracker->assignCorrelationId(
-                $message->messageId()->value(),
-            );
-        }
-
         $this->tracker->assignReplyTo(
-            $message->messageId()->value(),
+            $message->messageId()->value()
         );
 
         return $stack->next()->handle($envelope, $stack);
