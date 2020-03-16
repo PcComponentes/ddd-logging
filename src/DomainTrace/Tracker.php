@@ -34,14 +34,21 @@ final class Tracker
 
     public function replyTo(?Uuid $messageId = null): ?string
     {
-        if (null === $messageId || false === \array_key_exists($messageId->value(), $this->tracking)) {
+        if (null === $messageId) {
             return $this->replyTo;
         }
 
-        $tracking = $this->tracking[$messageId->value()];
+        if (true === \array_key_exists($messageId->value(), $this->tracking)) {
+            $tracking = $this->tracking[$messageId->value()];
 
-        return true === \array_key_exists('reply_to', $tracking)
-            ? $tracking['reply_to']
+            return true === \array_key_exists('reply_to', $tracking)
+                ? $tracking['reply_to']
+                : null
+            ;
+        }
+
+        return $messageId->value() !== $this->replyTo
+            ? $this->replyTo
             : null
         ;
     }
@@ -64,7 +71,6 @@ final class Tracker
     public function assignReplyTo(string $replyTo, ?Uuid $messageId = null): void
     {
         $this->replyTo = $replyTo;
-
         if (null === $messageId) {
             return;
         }
