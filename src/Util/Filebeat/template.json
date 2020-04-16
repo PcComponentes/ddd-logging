@@ -4,45 +4,11 @@
       "@timestamp": {
         "type": "date"
       },
-      "beat": {
-        "properties": {
-          "hostname": {
-            "type": "keyword"
-          },
-          "name": {
-            "type": "keyword"
-          },
-          "version": {
-            "type": "keyword"
-          }
-        }
-      },
       "channel": {
         "type": "keyword"
       },
       "context": {
         "properties": {
-          "class": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
-          },
-          "code": {
-            "type": "integer"
-          },
-          "command": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
-          },
           "exception": {
             "properties": {
               "class": {
@@ -86,9 +52,6 @@
           "message": {
             "type": "text"
           },
-          "method": {
-            "type": "keyword"
-          },
           "name": {
             "type": "text",
             "fields": {
@@ -98,42 +61,62 @@
               }
             }
           },
-          "request_uri": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
-          },
-          "route": {
-            "type": "text",
-            "fields": {
-              "keyword": {
-                "type": "keyword",
-                "ignore_above": 256
-              }
-            }
-          },
-          "route_parameters": {
-            "properties": {
-              "_controller": {
-                "type": "text",
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
+          "http": {
+            "client" : {
+              "properties" : {
+                "agent" : {
+                  "type" : "text",
+                  "fields": {
+                    "keyword": {
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    }
                   }
+                },
+                "address" : {
+                  "type" : "ip"
                 }
-              },
-              "_route": {
-                "type": "text",
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
+              }
+            },
+            "request" : {
+              "properties" : {
+                "scheme" : {
+                  "type" : "keyword",
+                  "ignore_above" : 10
+                },
+                "protocol" : {
+                  "type" : "keyword",
+                  "ignore_above" : 1024
+                },
+                "method" : {
+                  "type" : "keyword",
+                  "ignore_above" : 10
+                },
+                "host" : {
+                  "type" : "keyword",
+                  "ignore_above" : 1024
+                },
+                "uri" : {
+                  "type": "text",
+                  "fields": {
+                    "keyword": {
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    }
                   }
+                },
+                "payload" : {
+                  "type" : "text"
+                }
+              }
+            },
+            "response" : {
+              "properties" : {
+                "code" : {
+                  "type" : "integer"
+                },
+                "payload" : {
+                  "type" : "text"
                 }
               }
             }
@@ -150,16 +133,6 @@
           },
           "timezone_type": {
             "type": "byte"
-          }
-        }
-      },
-      "error": {
-        "properties": {
-          "message": {
-            "type": "text"
-          },
-          "type": {
-            "type": "text"
           }
         }
       },
@@ -222,20 +195,6 @@
           },
           "execution_time": {
             "type": "float"
-          }
-        }
-      },
-      "host": {
-        "properties": {
-          "name": {
-            "type": "keyword"
-          }
-        }
-      },
-      "input": {
-        "properties": {
-          "type": {
-            "type": "keyword"
           }
         }
       },
