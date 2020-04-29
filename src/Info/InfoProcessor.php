@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace PcComponentes\DddLogging\Info;
 
 use Monolog\Processor\ProcessorInterface;
-use Pccomponentes\Ddd\Util\Message\AggregateMessage;
+use PcComponentes\Ddd\Util\Message\AggregateMessage;
 use PcComponentes\Ddd\Util\Message\Message;
 
 final class InfoProcessor implements ProcessorInterface

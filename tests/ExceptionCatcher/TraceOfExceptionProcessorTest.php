@@ -22,7 +22,7 @@ final class TraceOfExceptionProcessorTest extends TestCase
 
     public function testShouldReturnedRecordWithExceptionContext()
     {
-        $exceptionMock = $this->createMock(SerializableException::class);
+        $exceptionMock = $this->createMock(\JsonSerializable::class);
         $record = [
             'context' => [
                 'exception' => $exceptionMock
@@ -30,8 +30,8 @@ final class TraceOfExceptionProcessorTest extends TestCase
         ];
 
         $exceptionMock
-            ->expects($this->once())
-            ->method('serialice')
+            ->expects($this->atLeastOnce())
+            ->method('jsonSerialize')
             ->willReturn([]);
 
         $recordResult = (new TraceOfExceptionProcessor())($record);

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\Tests\MessageLogger;
 
-use Pccomponentes\Ddd\Domain\Model\ValueObject\Uuid;
-use Pccomponentes\Ddd\Util\Message\SimpleMessage;
+use PcComponentes\Ddd\Domain\Model\ValueObject\Uuid;
+use PcComponentes\Ddd\Util\Message\SimpleMessage;
 use PcComponentes\DddLogging\MessageLogger\Action;
 use PcComponentes\DddLogging\MessageLogger\MessageLoggerMiddleware;
 use PHPUnit\Framework\MockObject\MockObject;

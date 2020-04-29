@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace PcComponentes\DddLogging\OccurredOn;
 
 use Monolog\Processor\ProcessorInterface;
-use Pccomponentes\Ddd\Domain\Model\DomainEvent;
+use PcComponentes\Ddd\Domain\Model\DomainEvent;
 
 final class OccurredOnProcessor implements ProcessorInterface
 {

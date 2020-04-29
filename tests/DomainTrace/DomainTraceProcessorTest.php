@@ -13,7 +13,9 @@ final class DomainTraceProcessorTest extends TestCase
     {
         $correlationId = "correlation_id_value";
         $replyTo = "reply_to_value";
-        $record = [];
+        $record = [
+            'context' => [],
+        ];
 
         $trackerMock = $this->createMock(Tracker::class);
         $trackerMock

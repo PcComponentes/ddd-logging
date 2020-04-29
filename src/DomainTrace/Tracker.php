@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\DomainTrace;
 
-use Pccomponentes\Ddd\Domain\Model\ValueObject\Uuid;
+use PcComponentes\Ddd\Domain\Model\ValueObject\Uuid;
 
 final class Tracker
 {

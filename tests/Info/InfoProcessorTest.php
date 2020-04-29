@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\Tests\Info;
 
-use Pccomponentes\Ddd\Domain\Model\ValueObject\DateTimeValueObject;
-use Pccomponentes\Ddd\Domain\Model\ValueObject\Uuid;
-use Pccomponentes\Ddd\Util\Message\AggregateMessage;
-use Pccomponentes\Ddd\Util\Message\SimpleMessage;
+use PcComponentes\Ddd\Domain\Model\ValueObject\DateTimeValueObject;
+use PcComponentes\Ddd\Domain\Model\ValueObject\Uuid;
+use PcComponentes\Ddd\Util\Message\AggregateMessage;
+use PcComponentes\Ddd\Util\Message\SimpleMessage;
 use PcComponentes\DddLogging\Info\InfoProcessor;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

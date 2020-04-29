@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace PcComponentes\DddLogging\ExceptionCatcher;
 
 use Monolog\Processor\ProcessorInterface;
-use Pccomponentes\Apixception\Core\Exception\SerializableException;
 use PcComponentes\DddLogging\Util\AssocSerializer;
 
 final class TraceOfExceptionProcessor implements ProcessorInterface
@@ -18,12 +17,15 @@ final class TraceOfExceptionProcessor implements ProcessorInterface
         $exception = $record['context']['exception'];
         $record['context']['exception'] = AssocSerializer::from($record['context']['exception']);
 
-        if ($exception instanceof SerializableException) {
-            $record['context']['exception']['data'] = \json_encode($exception->serialice());
+        if ($exception instanceof \JsonSerializable) {
+            $record['context']['exception']['data'] = \json_encode($exception, JSON_THROW_ON_ERROR);
         }
 
         if (true === \array_key_exists('trace', $record['context']['exception'])) {
-            $record['context']['exception']['trace'] = \json_encode($record['context']['exception']['trace']);
+            $record['context']['exception']['trace'] = \json_encode(
+                $record['context']['exception']['trace'],
+                JSON_THROW_ON_ERROR
+            );
         }
 
         return $record;

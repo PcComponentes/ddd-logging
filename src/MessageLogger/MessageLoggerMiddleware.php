@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\MessageLogger;
 
-use Pccomponentes\Ddd\Util\Message\Message;
+use PcComponentes\Ddd\Util\Message\Message;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
