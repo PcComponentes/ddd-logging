@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace PcComponentes\DddLogging\DomainTrace;
 
 use Monolog\Processor\ProcessorInterface;
-use Pccomponentes\Ddd\Domain\Model\ValueObject\Uuid;
-use Pccomponentes\Ddd\Util\Message\Message;
+use PcComponentes\Ddd\Domain\Model\ValueObject\Uuid;
+use PcComponentes\Ddd\Util\Message\Message;
 
 final class DomainTraceProcessor implements ProcessorInterface
 {

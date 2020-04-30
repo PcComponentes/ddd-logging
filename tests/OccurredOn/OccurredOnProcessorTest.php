@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\Tests\OccurredOn;
 
-use Pccomponentes\Ddd\Domain\Model\DomainEvent;
+use PcComponentes\Ddd\Domain\Model\DomainEvent;
 use PcComponentes\DddLogging\OccurredOn\OccurredOnProcessor;
 use PHPUnit\Framework\TestCase;
 

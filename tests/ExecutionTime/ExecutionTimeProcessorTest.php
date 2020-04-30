@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\Tests\ExecutionTime;
 
-use Pccomponentes\Ddd\Domain\Model\ValueObject\Uuid;
-use Pccomponentes\Ddd\Util\Message\Message;
+use PcComponentes\Ddd\Domain\Model\ValueObject\Uuid;
+use PcComponentes\Ddd\Util\Message\Message;
 use PcComponentes\DddLogging\ExecutionTime\ExecutionTimeProcessor;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace PcComponentes\DddLogging\ExecutionTime;
 
 use Monolog\Processor\ProcessorInterface;
-use Pccomponentes\Ddd\Util\Message\Message;
+use PcComponentes\Ddd\Util\Message\Message;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 final class ExecutionTimeProcessor implements ProcessorInterface

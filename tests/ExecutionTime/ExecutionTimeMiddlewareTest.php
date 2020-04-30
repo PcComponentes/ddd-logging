@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\Tests\ExecutionTime;
 
-use Pccomponentes\Ddd\Domain\Model\ValueObject\Uuid;
-use Pccomponentes\Ddd\Util\Message\Message;
+use PcComponentes\Ddd\Domain\Model\ValueObject\Uuid;
+use PcComponentes\Ddd\Util\Message\Message;
 use PcComponentes\DddLogging\ExecutionTime\ExecutionTimeMiddleware;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\Tests\CorrelationId;
 
-use Pccomponentes\Ddd\Domain\Model\ValueObject\Uuid;
-use Pccomponentes\Ddd\Util\Message\Message;
+use PcComponentes\Ddd\Domain\Model\ValueObject\Uuid;
+use PcComponentes\Ddd\Util\Message\Message;
 use PcComponentes\DddLogging\DomainTrace\MessageTraceMiddleware;
 use PcComponentes\DddLogging\DomainTrace\Tracker;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -48,13 +48,13 @@ final class MessageTraceMiddlewareTest extends TestCase
         $toStringUuid = 'e62d7245-57b3-4842-9c7f-f7a89a439450';
         $mockMessageId = $this->createMock(Uuid::class);
         $mockMessageId
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(1))
             ->method('value')
             ->willReturn($toStringUuid);
 
         $mockMessage = $this->createMock(Message::class);
         $mockMessage
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(1))
             ->method('messageId')
             ->willReturn($mockMessageId);
 
@@ -62,16 +62,6 @@ final class MessageTraceMiddlewareTest extends TestCase
             ->expects($this->once())
             ->method('getMessage')
             ->willReturn($mockMessage);
-
-        $this->mockTracker
-            ->expects($this->atLeastOnce())
-            ->method('correlationId')
-            ->willReturn(null);
-
-        $this->mockTracker
-            ->expects($this->once())
-            ->method('assignCorrelationId')
-            ->with($toStringUuid);
 
         $this->mockTracker
             ->expects($this->once())
@@ -115,11 +105,6 @@ final class MessageTraceMiddlewareTest extends TestCase
             ->expects($this->once())
             ->method('getMessage')
             ->willReturn($mockMessage);
-
-        $this->mockTracker
-            ->expects($this->atLeastOnce())
-            ->method('correlationId')
-            ->willReturn($toStringUuid);
 
         $this->mockTracker
             ->expects($this->once())
