@@ -32,7 +32,7 @@ final class MessageTraceMiddlewareTest extends TestCase
         $this->mockEnvelope
             ->expects($this->once())
             ->method('getMessage')
-            ->willReturn(null);
+            ->willReturn(new \stdClass());
 
         $this->expectException(\TypeError::class);
 
