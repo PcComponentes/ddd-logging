@@ -24,12 +24,12 @@
   "require": {
     "php": "^7.4",
     "ext-json": "*",
-    "monolog/monolog": "^1.25",
+    "monolog/monolog": "^1.25|^2.0",
     "pccomponentes/ddd": "^2.0",
-    "symfony/http-kernel": "^4.4",
-    "symfony/messenger": "^4.4",
-    "symfony/http-foundation": "^4.4",
-    "symfony/stopwatch": "^4.4",
+    "symfony/http-kernel": "^4.4|^5.0",
+    "symfony/messenger": "^4.4|^5.0",
+    "symfony/http-foundation": "^4.4|^5.0",
+    "symfony/stopwatch": "^4.4|^5.0",
     "guzzlehttp/guzzle": "^6.5"
   },
   "require-dev": {
