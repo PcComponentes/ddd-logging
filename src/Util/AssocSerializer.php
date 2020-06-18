@@ -27,25 +27,13 @@ final class AssocSerializer
 
     private static function throwable(\Throwable $throwable): array
     {
-        $trace = \json_encode(
-            $throwable->getTrace(),
-        );
-
-        $trace = \is_string($trace)
-            ? \json_decode($trace, true)
-            : \print_r(
-                $throwable->getTrace(),
-                true,
-            )
-        ;
-
         return [
             'class' => \get_class($throwable),
             'message' => $throwable->getMessage(),
             'code' => $throwable->getCode(),
             'file' => $throwable->getFile(),
             'line' => $throwable->getLine(),
-            'trace' => $trace,
+            'trace' => $throwable->getTraceAsString(),
         ];
     }
 
