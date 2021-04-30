@@ -46,6 +46,9 @@
               },
               "trace": {
                 "type": "text"
+              },
+              "data": {
+                "type": "text"
               }
             }
           },
@@ -124,17 +127,7 @@
         }
       },
       "datetime": {
-        "properties": {
-          "date": {
-            "type": "keyword"
-          },
-          "timezone": {
-            "type": "keyword"
-          },
-          "timezone_type": {
-            "type": "byte"
-          }
-        }
+        "type": "text"
       },
       "extra": {
         "properties": {
