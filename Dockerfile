@@ -1,4 +1,4 @@
-FROM php:7.4-cli-alpine3.11
+FROM php:8.0-cli-alpine3.13
 
 RUN apk add --no-cache \
         libzip-dev \
@@ -10,9 +10,9 @@ RUN apk add --no-cache \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
 
 RUN apk add --no-cache --virtual .phpize_deps $PHPIZE_DEPS && \
-    pecl install xdebug-2.9.2 && \
+    pecl install xdebug-3.0.4 && \
     docker-php-ext-enable xdebug && \
-    rm -rf /usr/share/php7 && \
+    rm -rf /usr/share/php8 && \
     rm -rf /tmp/pear && \
     apk del .phpize_deps
 
