@@ -53,7 +53,7 @@
             "type": "text"
           },
           "retry_count": {
-            "type": "text"
+            "type": "integer"
           },
           "name": {
             "type": "text",
