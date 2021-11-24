@@ -57,8 +57,7 @@ final class MessageLoggerMiddleware implements MiddlewareInterface
     private function extractEnvelopeRetryCount(Envelope $envelope): int
     {
         $retryCountStamp = $envelope->last(RedeliveryStamp::class);
-        $retryCount = null !== $retryCountStamp ? $retryCountStamp->getRetryCount() : 0;
-
-        return $retryCount;
+        
+        return null !== $retryCountStamp ? $retryCountStamp->getRetryCount() : 0;
     }
 }
