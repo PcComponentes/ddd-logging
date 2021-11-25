@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
 use Symfony\Component\Messenger\Middleware\StackInterface;
+use Symfony\Component\Messenger\Stamp\RedeliveryStamp;
 
 final class MessageLoggerMiddleware implements MiddlewareInterface
 {
@@ -26,6 +27,7 @@ final class MessageLoggerMiddleware implements MiddlewareInterface
         $context = [
             'message' => $message,
             'name' => $message::messageName(),
+            'retry_count' => $this->extractEnvelopeRetryCount($envelope),
         ];
 
         try {
@@ -50,5 +52,12 @@ final class MessageLoggerMiddleware implements MiddlewareInterface
     private function messageFromEnvelope(Envelope $envelope): Message
     {
         return $envelope->getMessage();
+    }
+
+    private function extractEnvelopeRetryCount(Envelope $envelope): int
+    {
+        $retryCountStamp = $envelope->last(RedeliveryStamp::class);
+        
+        return null !== $retryCountStamp ? $retryCountStamp->getRetryCount() : 0;
     }
 }

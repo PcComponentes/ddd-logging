@@ -52,6 +52,9 @@
           "message": {
             "type": "text"
           },
+          "retry_count": {
+            "type": "integer"
+          },
           "name": {
             "type": "text",
             "fields": {
