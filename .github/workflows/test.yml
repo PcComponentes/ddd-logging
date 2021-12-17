@@ -8,4 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - run: make cache-folders build composer-install tests
+        name: 'Run checkout'
+      - run: make cache-folders build composer-install
+        name: 'Build environment'
+      - run: make tests
+        name: 'Run unit tests'
