@@ -68,7 +68,7 @@ final class InfoProcessorTest extends TestCase
     {
         $stringMessageUuid = '04e6de1e-c5b9-42fc-ad43-e1ec4e64e121';
         $stringAggregateUuid = '575f378a-e0b4-4197-89c3-5c3065fdaf1e';
-        $occurredOn = new DateTimeValueObject('now');
+        $occurredOn = DateTimeValueObject::from('now');
 
         $messageIdMock = $this->createMock(Uuid::class);
         $messageIdMock
