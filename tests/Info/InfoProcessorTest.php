@@ -7,8 +7,8 @@ use PcComponentes\Ddd\Domain\Model\ValueObject\DateTimeValueObject;
 use PcComponentes\Ddd\Domain\Model\ValueObject\Uuid;
 use PcComponentes\Ddd\Util\Message\AggregateMessage;
 use PcComponentes\Ddd\Util\Message\SimpleMessage;
+use PcComponentes\Ddd\Util\Message\ValueObject\AggregateId;
 use PcComponentes\DddLogging\Info\InfoProcessor;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class InfoProcessorTest extends TestCase
@@ -75,7 +75,7 @@ final class InfoProcessorTest extends TestCase
             ->method('value')
             ->willReturn($stringMessageUuid);
 
-        $aggregateIdMock = $this->createMock(Uuid::class);
+        $aggregateIdMock = $this->createMock(AggregateId::class);
         $aggregateIdMock
             ->method('value')
             ->willReturn($stringAggregateUuid);
