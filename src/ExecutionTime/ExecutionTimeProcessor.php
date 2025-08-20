@@ -28,7 +28,7 @@ final class ExecutionTimeProcessor implements ProcessorInterface
             return $record;
         }
 
-        $record['extra']['execution_time'] = $this->getExecutionTime($message);
+        $record['context']['execution_time'] = $this->getExecutionTime($message);
 
         return $record;
     }
@@ -40,7 +40,7 @@ final class ExecutionTimeProcessor implements ProcessorInterface
         try {
             $event = $this->stopwatch->getEvent(
                 $message->messageId()->value(),
-                );
+            );
 
             $duration = $event->getDuration();
         } catch (\LogicException $exception) {

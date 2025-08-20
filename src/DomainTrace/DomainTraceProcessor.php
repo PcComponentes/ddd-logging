@@ -20,8 +20,8 @@ final class DomainTraceProcessor implements ProcessorInterface
     {
         $messageId = $this->getMessageId($record);
 
-        $record['extra']['correlation_id'] = $this->tracker->correlationId($messageId);
-        $record['extra']['reply_to'] = $this->tracker->replyTo($messageId);
+        $record['context']['trace']['correlation_id'] = $this->tracker->correlationId($messageId);
+        $record['context']['trace']['reply_to'] = $this->tracker->replyTo($messageId);
 
         return $record;
     }
@@ -33,6 +33,7 @@ final class DomainTraceProcessor implements ProcessorInterface
         }
 
         $message = $record['context']['message'];
+
         if (false === $message instanceof Message) {
             return null;
         }

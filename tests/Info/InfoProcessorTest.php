@@ -54,14 +54,14 @@ final class InfoProcessorTest extends TestCase
 
         $result = (new InfoProcessor())($record);
 
-        $this->assertArrayHasKey('extra', $result);
-        $this->assertArrayHasKey('message_id', $result['extra']);
-        $this->assertEquals($stringUuid, $result['extra']['message_id']);
-        $this->assertArrayHasKey('name', $result['extra']);
-        $this->assertEquals(SimpleMessageMock::messageName(), $result['extra']['name']);
-        $this->assertArrayHasKey('type', $result['extra']);
-        $this->assertEquals(SimpleMessageMock::messageType(), $result['extra']['type']);
-        $this->assertArrayHasKey('payload', $result['extra']);
+        $this->assertArrayHasKey('context', $result);
+        $this->assertArrayHasKey('message_id', $result['context']);
+        $this->assertEquals($stringUuid, $result['context']['message_id']);
+        $this->assertArrayHasKey('name', $result['context']);
+        $this->assertEquals(SimpleMessageMock::messageName(), $result['context']['name']);
+        $this->assertArrayHasKey('type', $result['context']);
+        $this->assertEquals(SimpleMessageMock::messageType(), $result['context']['type']);
+        $this->assertArrayHasKey('payload', $result['context']);
     }
 
     public function testShouldReturnedWithAggregateMessageInfo()
@@ -96,13 +96,13 @@ final class InfoProcessorTest extends TestCase
 
         $result = (new InfoProcessor())($record);
 
-        $this->assertArrayHasKey('extra', $result);
-        $this->assertArrayHasKey('aggregate_id', $result['extra']);
-        $this->assertEquals($aggregateIdMock, $result['extra']['aggregate_id']);
-        $this->assertArrayHasKey('aggregate_version', $result['extra']);
-        $this->assertEquals($aggregateMessage->aggregateVersion(), $result['extra']['aggregate_version']);
-        $this->assertArrayHasKey('occurred_on', $result['extra']);
-        $this->assertEquals($aggregateMessage->occurredOn()->format(\DateTime::ATOM), $result['extra']['occurred_on']);
+        $this->assertArrayHasKey('context', $result);
+        $this->assertArrayHasKey('aggregate_id', $result['context']);
+        $this->assertEquals($aggregateIdMock, $result['context']['aggregate_id']);
+        $this->assertArrayHasKey('aggregate_version', $result['context']);
+        $this->assertEquals($aggregateMessage->aggregateVersion(), $result['context']['aggregate_version']);
+        $this->assertArrayHasKey('occurred_on', $result['context']);
+        $this->assertEquals($aggregateMessage->occurredOn()->format(\DateTime::ATOM), $result['context']['occurred_on']);
     }
 }
 

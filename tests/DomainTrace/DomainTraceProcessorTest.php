@@ -30,7 +30,7 @@ final class DomainTraceProcessorTest extends TestCase
 
         $record = (new DomainTraceProcessor($trackerMock))($record);
 
-        $this->assertEquals($correlationId, $record['extra']['correlation_id']);
-        $this->assertEquals($replyTo, $record['extra']['reply_to']);
+        $this->assertEquals($correlationId, $record['context']['trace']['correlation_id']);
+        $this->assertEquals($replyTo, $record['context']['trace']['reply_to']);
     }
 }
