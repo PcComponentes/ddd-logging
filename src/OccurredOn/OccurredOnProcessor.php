@@ -5,6 +5,7 @@ namespace PcComponentes\DddLogging\OccurredOn;
 
 use Monolog\Processor\ProcessorInterface;
 use PcComponentes\Ddd\Domain\Model\DomainEvent;
+use PcComponentes\Ddd\Domain\Model\ValueObject\DateTimeValueObject;
 
 final class OccurredOnProcessor implements ProcessorInterface
 {
@@ -17,21 +18,12 @@ final class OccurredOnProcessor implements ProcessorInterface
         $message = $record['context']['message'];
 
         if ($message instanceof DomainEvent) {
-            $occurredOn = \sprintf(
-                '%d%d',
-                $message->occurredOn()->getTimestamp(),
-                $message->occurredOn()->format('v')
-            );
-            $record['occurred_on'] = \intval($occurredOn);
+            $record['occurred_on'] = (int) $message->occurredOn()->format('Uv');
 
             return $record;
         }
 
-        $record['occurred_on'] = \intval(
-            \round(
-                \microtime(true) * 1000,
-            )
-        );
+        $record['occurred_on'] = (int) DateTimeValueObject::now()->format('Uv');
 
         return $record;
     }
