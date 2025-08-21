@@ -11,6 +11,7 @@ final class NormalizeMessageProcessor implements ProcessorInterface
     public function __invoke(LogRecord $record)
     {
         $returnRecord = $record;
+
         if (false === \array_key_exists('message', $record['context'])) {
             return $returnRecord;
         }

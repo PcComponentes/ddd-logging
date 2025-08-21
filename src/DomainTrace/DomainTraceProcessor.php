@@ -21,8 +21,8 @@ final class DomainTraceProcessor implements ProcessorInterface
     {
         $messageId = $this->getMessageId($record);
 
-        $record['context']['trace']['correlation_id'] = $this->tracker->correlationId($messageId);
-        $record['context']['trace']['reply_to'] = $this->tracker->replyTo($messageId);
+        $record['extra']['trace']['correlation_id'] = $this->tracker->correlationId($messageId);
+        $record['extra']['trace']['reply_to'] = $this->tracker->replyTo($messageId);
 
         return $record;
     }

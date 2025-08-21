@@ -52,7 +52,7 @@ final class OccurredOnProcessorTest extends TestCase
         );
 
         $result = (new OccurredOnProcessor())($record);
-        $this->assertArrayHasKey('occurred_on', $result);
-        $this->assertEquals($expectedTimestamp, $result['occurred_on']);
+        $this->assertArrayHasKey('occurred_on', $result['extra']);
+        $this->assertEquals($expectedTimestamp, $result['extra']['occurred_on']);
     }
 }

@@ -33,10 +33,9 @@ class ExecutionTimeProcessorTest extends TestCase
 
     public function testShouldReturnedRecordWithoutDDDMessage()
     {
-        $record = LogRecordMother::withContext( [
-                'message' => []
-            ],
-        );
+        $record = LogRecordMother::withContext([
+            'message' => [],
+        ]);
 
         $result = (new ExecutionTimeProcessor($this->stopwatchMock))($record);
 
@@ -71,15 +70,14 @@ class ExecutionTimeProcessorTest extends TestCase
             ->method('getDuration')
             ->willReturn($milliseconds);
 
-        $record = LogRecordMother::withContext( [
-                'message' => $messageMock
-            ],
-        );
+        $record = LogRecordMother::withContext([
+            'message' => $messageMock,
+        ],);
 
         $result = (new ExecutionTimeProcessor($this->stopwatchMock))($record);
 
-        $this->assertArrayHasKey('execution_time', $result['context']);
-        $this->assertEquals($milliseconds / 1000, $result['context']['execution_time']);
+        $this->assertArrayHasKey('execution_time', $result['extra']);
+        $this->assertEquals($milliseconds / 1000, $result['extra']['execution_time']);
     }
 
     public function testShouldReturnedZeroExecutionTimeWhenLogicExceptionOccurred()
@@ -108,14 +106,13 @@ class ExecutionTimeProcessorTest extends TestCase
             ->method('getDuration')
             ->willThrowException(new \LogicException());
 
-        $record = LogRecordMother::withContext( [
-                'message' => $messageMock
-            ],
-        );
+        $record = LogRecordMother::withContext([
+            'message' => $messageMock,
+        ],);
 
         $result = (new ExecutionTimeProcessor($this->stopwatchMock))($record);
 
-        $this->assertArrayHasKey('execution_time', $result['context']);
-        $this->assertEquals(0, $result['context']['execution_time']);
+        $this->assertArrayHasKey('execution_time', $result['extra']);
+        $this->assertEquals(0, $result['extra']['execution_time']);
     }
 }

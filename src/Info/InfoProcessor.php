@@ -30,10 +30,10 @@ final class InfoProcessor implements ProcessorInterface
             return $record;
         }
 
-        $record['context']['message_id'] = $message->messageId()->value();
-        $record['context']['name'] = $message::messageName();
-        $record['context']['type'] = $message::messageType();
-        $record['context']['payload'] = \json_encode($message->messagePayload());
+        $record['extra']['message']['message_id'] = $message->messageId()->value();
+        $record['extra']['message']['name'] = $message::messageName();
+        $record['extra']['message']['type'] = $message::messageType();
+        $record['extra']['message']['payload'] = \json_encode($message->messagePayload());
 
         return $record;
     }
@@ -46,9 +46,9 @@ final class InfoProcessor implements ProcessorInterface
             return $record;
         }
 
-        $record['context']['aggregate_id'] = $message->aggregateId();
-        $record['context']['aggregate_version'] = $message->aggregateVersion();
-        $record['context']['occurred_on'] = $message->occurredOn()->format(\DateTime::ATOM);
+        $record['extra']['message']['aggregate_id'] = $message->aggregateId();
+        $record['extra']['message']['aggregate_version'] = $message->aggregateVersion();
+        $record['extra']['message']['occurred_on'] = $message->occurredOn()->format(\DateTime::ATOM);
 
         return $record;
     }

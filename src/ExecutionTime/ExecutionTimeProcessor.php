@@ -29,7 +29,7 @@ final class ExecutionTimeProcessor implements ProcessorInterface
             return $record;
         }
 
-        $record['context']['execution_time'] = $this->getExecutionTime($message);
+        $record['extra']['execution_time'] = $this->getExecutionTime($message);
 
         return $record;
     }
