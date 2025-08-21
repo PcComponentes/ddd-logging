@@ -10,7 +10,7 @@ use PcComponentes\Ddd\Domain\Model\ValueObject\DateTimeValueObject;
 
 final class OccurredOnProcessor implements ProcessorInterface
 {
-    public function __invoke(LogRecord $record)
+    public function __invoke(LogRecord $record): LogRecord
     {
         if (false === \array_key_exists('message', $record['context'])) {
             return $record;
@@ -19,12 +19,12 @@ final class OccurredOnProcessor implements ProcessorInterface
         $message = $record['context']['message'];
 
         if ($message instanceof DomainEvent) {
-            $record['extra']['occurred_on'] = (int) $message->occurredOn()->format('Uv');
+            $record['extra']['occurred_on'] = (int)$message->occurredOn()->format('Uv');
 
             return $record;
         }
 
-        $record['extra']['occurred_on'] = (int) DateTimeValueObject::now()->format('Uv');
+        $record['extra']['occurred_on'] = (int)DateTimeValueObject::now()->format('Uv');
 
         return $record;
     }

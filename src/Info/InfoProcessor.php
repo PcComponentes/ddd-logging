@@ -10,7 +10,7 @@ use PcComponentes\Ddd\Util\Message\Message;
 
 final class InfoProcessor implements ProcessorInterface
 {
-    public function __invoke(LogRecord $record)
+    public function __invoke(LogRecord $record): LogRecord
     {
         if (false === \array_key_exists('message', $record['context'])) {
             return $record;

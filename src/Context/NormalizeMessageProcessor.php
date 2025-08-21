@@ -8,7 +8,7 @@ use Monolog\Processor\ProcessorInterface;
 
 final class NormalizeMessageProcessor implements ProcessorInterface
 {
-    public function __invoke(LogRecord $record)
+    public function __invoke(LogRecord $record): LogRecord
     {
         $returnRecord = $record;
 

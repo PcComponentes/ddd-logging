@@ -17,7 +17,7 @@ final class DomainTraceProcessor implements ProcessorInterface
         $this->tracker = $tracker;
     }
 
-    public function __invoke(LogRecord $record)
+    public function __invoke(LogRecord $record): LogRecord
     {
         $messageId = $this->getMessageId($record);
 
@@ -26,7 +26,7 @@ final class DomainTraceProcessor implements ProcessorInterface
 
         return $record;
     }
-    
+
     private function getMessageId(LogRecord $record): ?Uuid
     {
         if (false === \array_key_exists('message', $record['context'])) {

@@ -17,7 +17,7 @@ final class ExecutionTimeProcessor implements ProcessorInterface
         $this->stopwatch = $stopwatch;
     }
 
-    public function __invoke(LogRecord $record)
+    public function __invoke(LogRecord $record): LogRecord
     {
         if (false === \array_key_exists('message', $record['context'])) {
             return $record;

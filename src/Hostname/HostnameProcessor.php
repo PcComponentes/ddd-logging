@@ -15,7 +15,7 @@ final class HostnameProcessor implements ProcessorInterface
         $this->host = \gethostname();
     }
 
-    public function __invoke(LogRecord $record)
+    public function __invoke(LogRecord $record): LogRecord
     {
         $record['extra']['hostname'] = $this->host;
 

@@ -15,7 +15,7 @@ final class MonologIteratorProcessor implements ProcessorInterface
         $this->processors = $processors;
     }
 
-    public function __invoke(LogRecord $record)
+    public function __invoke(LogRecord $record): LogRecord
     {
         foreach ($this->processors as $processor) {
             $record = $processor($record);

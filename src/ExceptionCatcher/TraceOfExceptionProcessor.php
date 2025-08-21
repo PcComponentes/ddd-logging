@@ -9,7 +9,7 @@ use PcComponentes\DddLogging\Util\AssocSerializer;
 
 final class TraceOfExceptionProcessor implements ProcessorInterface
 {
-    public function __invoke(LogRecord $record)
+    public function __invoke(LogRecord $record): LogRecord
     {
         if (false === \array_key_exists('exception', $record['context'])) {
             return $record;
@@ -21,13 +21,13 @@ final class TraceOfExceptionProcessor implements ProcessorInterface
         $context['exception'] = AssocSerializer::from($context['exception']);
 
         if ($exception instanceof \JsonSerializable) {
-            $context['exception']['data'] = \json_encode($exception, JSON_THROW_ON_ERROR);
+            $context['exception']['data'] = \json_encode($exception, \JSON_THROW_ON_ERROR);
         }
 
         if (true === \array_key_exists('trace', $context['exception'])) {
             $context['exception']['trace'] = \json_encode(
                 $context['exception']['trace'],
-                JSON_THROW_ON_ERROR
+                \JSON_THROW_ON_ERROR,
             );
         }
 
@@ -38,6 +38,6 @@ final class TraceOfExceptionProcessor implements ProcessorInterface
             $record->message,
             $context,
             $record->extra,
-        );;
+        );
     }
 }
