@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\Tests\Context;
 
+use Monolog\LogRecord;
 use PcComponentes\DddLogging\Context\NormalizeMessageProcessor;
+use PcComponentes\DddLogging\Tests\Mock\LogRecordMother;
 use PHPUnit\Framework\TestCase;
 
 final class NormalizeContextProcessorTest extends TestCase
 {
     public function testShouldReturnedRecordWithoutMessage()
     {
-        $record = [
-            'context' => []
-        ];
+        $record = LogRecordMother::default();
 
         $result = (new NormalizeMessageProcessor())($record);
 
@@ -21,13 +21,12 @@ final class NormalizeContextProcessorTest extends TestCase
 
     public function testShouldReturnedRecordWithEncodedMessage()
     {
-        $record = [
-            'context' => [
+        $record = LogRecordMother::withContext([
                 'message' => [
                     'This is a message',
                 ],
             ],
-        ];
+        );
 
         $expectedEncodedMessage = \json_encode($record['context']['message']);
 

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging;
 
+use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 
 final class MonologIteratorProcessor implements ProcessorInterface
@@ -14,7 +15,7 @@ final class MonologIteratorProcessor implements ProcessorInterface
         $this->processors = $processors;
     }
 
-    public function __invoke(array $record)
+    public function __invoke(LogRecord $record): LogRecord
     {
         foreach ($this->processors as $processor) {
             $record = $processor($record);

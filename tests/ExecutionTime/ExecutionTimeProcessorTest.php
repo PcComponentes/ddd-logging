@@ -6,6 +6,7 @@ namespace PcComponentes\DddLogging\Tests\ExecutionTime;
 use PcComponentes\Ddd\Domain\Model\ValueObject\Uuid;
 use PcComponentes\Ddd\Util\Message\Message;
 use PcComponentes\DddLogging\ExecutionTime\ExecutionTimeProcessor;
+use PcComponentes\DddLogging\Tests\Mock\LogRecordMother;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -23,9 +24,7 @@ class ExecutionTimeProcessorTest extends TestCase
 
     public function testShouldReturnedRecordWithoutMessage()
     {
-        $record = [
-            'context' => [],
-        ];
+        $record = LogRecordMother::default();
 
         $result = (new ExecutionTimeProcessor($this->stopwatchMock))($record);
 
@@ -34,11 +33,9 @@ class ExecutionTimeProcessorTest extends TestCase
 
     public function testShouldReturnedRecordWithoutDDDMessage()
     {
-        $record = [
-            'context' => [
-                'message' => []
-            ],
-        ];
+        $record = LogRecordMother::withContext([
+            'message' => [],
+        ]);
 
         $result = (new ExecutionTimeProcessor($this->stopwatchMock))($record);
 
@@ -73,16 +70,14 @@ class ExecutionTimeProcessorTest extends TestCase
             ->method('getDuration')
             ->willReturn($milliseconds);
 
-        $record = [
-            'context' => [
-                'message' => $messageMock
-            ],
-        ];
+        $record = LogRecordMother::withContext([
+            'message' => $messageMock,
+        ],);
 
         $result = (new ExecutionTimeProcessor($this->stopwatchMock))($record);
 
-        $this->assertArrayHasKey('execution_time', $result['context']);
-        $this->assertEquals($milliseconds / 1000, $result['context']['execution_time']);
+        $this->assertArrayHasKey('execution_time', $result['extra']);
+        $this->assertEquals($milliseconds / 1000, $result['extra']['execution_time']);
     }
 
     public function testShouldReturnedZeroExecutionTimeWhenLogicExceptionOccurred()
@@ -111,15 +106,13 @@ class ExecutionTimeProcessorTest extends TestCase
             ->method('getDuration')
             ->willThrowException(new \LogicException());
 
-        $record = [
-            'context' => [
-                'message' => $messageMock
-            ],
-        ];
+        $record = LogRecordMother::withContext([
+            'message' => $messageMock,
+        ],);
 
         $result = (new ExecutionTimeProcessor($this->stopwatchMock))($record);
 
-        $this->assertArrayHasKey('execution_time', $result['context']);
-        $this->assertEquals(0, $result['context']['execution_time']);
+        $this->assertArrayHasKey('execution_time', $result['extra']);
+        $this->assertEquals(0, $result['extra']['execution_time']);
     }
 }
