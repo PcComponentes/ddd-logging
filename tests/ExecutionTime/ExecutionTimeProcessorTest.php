@@ -78,8 +78,8 @@ class ExecutionTimeProcessorTest extends TestCase
 
         $result = (new ExecutionTimeProcessor($this->stopwatchMock))($record);
 
-        $this->assertArrayHasKey('execution_time', $result['extra']);
-        $this->assertEquals($milliseconds / 1000, $result['extra']['execution_time']);
+        $this->assertArrayHasKey('execution_time', $result['context']);
+        $this->assertEquals($milliseconds / 1000, $result['context']['execution_time']);
     }
 
     public function testShouldReturnedZeroExecutionTimeWhenLogicExceptionOccurred()
@@ -115,7 +115,7 @@ class ExecutionTimeProcessorTest extends TestCase
 
         $result = (new ExecutionTimeProcessor($this->stopwatchMock))($record);
 
-        $this->assertArrayHasKey('execution_time', $result['extra']);
-        $this->assertEquals(0, $result['extra']['execution_time']);
+        $this->assertArrayHasKey('execution_time', $result['context']);
+        $this->assertEquals(0, $result['context']['execution_time']);
     }
 }

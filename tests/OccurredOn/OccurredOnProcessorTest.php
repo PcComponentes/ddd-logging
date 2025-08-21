@@ -24,7 +24,7 @@ final class OccurredOnProcessorTest extends TestCase
         $record = LogRecordMother::withContext(
             [
                 'message' => [],
-            ]
+            ],
         );
 
         $result = (new OccurredOnProcessor())($record);
@@ -35,49 +35,24 @@ final class OccurredOnProcessorTest extends TestCase
 
     public function testShouldReturnedRecordWithDomainEventOccurredOn()
     {
-        $timestamp = 1582912634; //1582913896 876
-        $milliseconds = '678';
-        $occurredOnMock = $this->createMock(\DateTime::class);
-        $occurredOnMock
-            ->expects($this->once())
-            ->method('getTimestamp')
-            ->willReturn($timestamp);
-        $occurredOnMock
-            ->expects($this->once())
-            ->method('format')
-            ->with('v')
-            ->willReturn($milliseconds);
+        $timestamp = '1582912634.678';
+        $expectedTimestamp = '1582912634678';
+        $occurredOn = \DateTimeImmutable::createFromFormat('U.v', $timestamp, new \DateTimeZone('UTC'));
 
         $domainEventMock = $this->createMock(DomainEvent::class);
         $domainEventMock
-            ->expects($this->exactly(2))
+            ->expects($this->once())
             ->method('occurredOn')
-            ->willReturn($occurredOnMock);
+            ->willReturn($occurredOn);
 
         $record = LogRecordMother::withContext(
-             [
-                'message' => $domainEventMock
-            ]
+            [
+                'message' => $domainEventMock,
+            ],
         );
 
         $result = (new OccurredOnProcessor())($record);
-        $this->assertEquals(
-            $this->expectedOccurredOn(
-                $timestamp,
-                $milliseconds
-            ),
-            $result['extra']['occurred_on']
-        );
-    }
-
-    private function expectedOccurredOn(int $timestamp, string $milliseconds)
-    {
-        return \intval(
-            \sprintf(
-                '%d%d',
-                $timestamp,
-                $milliseconds
-            )
-        );
+        $this->assertArrayHasKey('occurred_on', $result);
+        $this->assertEquals($expectedTimestamp, $result['occurred_on']);
     }
 }
