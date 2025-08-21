@@ -3,13 +3,14 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\Info;
 
+use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 use PcComponentes\Ddd\Util\Message\AggregateMessage;
 use PcComponentes\Ddd\Util\Message\Message;
 
 final class InfoProcessor implements ProcessorInterface
 {
-    public function __invoke(array $record)
+    public function __invoke(LogRecord $record)
     {
         if (false === \array_key_exists('message', $record['context'])) {
             return $record;
@@ -21,7 +22,7 @@ final class InfoProcessor implements ProcessorInterface
         return $record;
     }
 
-    private function messageInfo(array $record): array
+    private function messageInfo(LogRecord $record): LogRecord
     {
         $message = $record['context']['message'];
 
@@ -37,7 +38,7 @@ final class InfoProcessor implements ProcessorInterface
         return $record;
     }
 
-    private function aggregateInfo(array $record): array
+    private function aggregateInfo(LogRecord $record): LogRecord
     {
         $message = $record['context']['message'];
 

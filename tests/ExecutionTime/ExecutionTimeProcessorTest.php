@@ -6,6 +6,7 @@ namespace PcComponentes\DddLogging\Tests\ExecutionTime;
 use PcComponentes\Ddd\Domain\Model\ValueObject\Uuid;
 use PcComponentes\Ddd\Util\Message\Message;
 use PcComponentes\DddLogging\ExecutionTime\ExecutionTimeProcessor;
+use PcComponentes\DddLogging\Tests\Mock\LogRecordMother;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -23,9 +24,7 @@ class ExecutionTimeProcessorTest extends TestCase
 
     public function testShouldReturnedRecordWithoutMessage()
     {
-        $record = [
-            'context' => [],
-        ];
+        $record = LogRecordMother::default();
 
         $result = (new ExecutionTimeProcessor($this->stopwatchMock))($record);
 
@@ -34,11 +33,10 @@ class ExecutionTimeProcessorTest extends TestCase
 
     public function testShouldReturnedRecordWithoutDDDMessage()
     {
-        $record = [
-            'context' => [
+        $record = LogRecordMother::withContext( [
                 'message' => []
             ],
-        ];
+        );
 
         $result = (new ExecutionTimeProcessor($this->stopwatchMock))($record);
 
@@ -73,11 +71,10 @@ class ExecutionTimeProcessorTest extends TestCase
             ->method('getDuration')
             ->willReturn($milliseconds);
 
-        $record = [
-            'context' => [
+        $record = LogRecordMother::withContext( [
                 'message' => $messageMock
             ],
-        ];
+        );
 
         $result = (new ExecutionTimeProcessor($this->stopwatchMock))($record);
 
@@ -111,11 +108,10 @@ class ExecutionTimeProcessorTest extends TestCase
             ->method('getDuration')
             ->willThrowException(new \LogicException());
 
-        $record = [
-            'context' => [
+        $record = LogRecordMother::withContext( [
                 'message' => $messageMock
             ],
-        ];
+        );
 
         $result = (new ExecutionTimeProcessor($this->stopwatchMock))($record);
 

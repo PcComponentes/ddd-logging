@@ -9,15 +9,14 @@ use PcComponentes\Ddd\Util\Message\AggregateMessage;
 use PcComponentes\Ddd\Util\Message\SimpleMessage;
 use PcComponentes\Ddd\Util\Message\ValueObject\AggregateId;
 use PcComponentes\DddLogging\Info\InfoProcessor;
+use PcComponentes\DddLogging\Tests\Mock\LogRecordMother;
 use PHPUnit\Framework\TestCase;
 
 final class InfoProcessorTest extends TestCase
 {
     public function testShouldReturnedRecordWithoutMessage()
     {
-        $record = [
-            'context' => [],
-        ];
+        $record = LogRecordMother::default();
 
         $result = (new InfoProcessor())($record);
 
@@ -26,11 +25,7 @@ final class InfoProcessorTest extends TestCase
 
     public function testShouldReturnedRecordWithoutDDDMessage()
     {
-        $record = [
-            'context' => [
-                'message' => []
-            ],
-        ];
+        $record = LogRecordMother::default();
 
         $result = (new InfoProcessor())($record);
 
@@ -46,11 +41,10 @@ final class InfoProcessorTest extends TestCase
             ->willReturn($stringUuid);
         $simpleMessage = SimpleMessageMock::fromPayload($messageIdMock, []);
 
-        $record = [
-            'context' => [
+        $record = LogRecordMother::withContext([
                 'message' => $simpleMessage,
             ],
-        ];
+        );
 
         $result = (new InfoProcessor())($record);
 
@@ -88,11 +82,10 @@ final class InfoProcessorTest extends TestCase
             1
         );
 
-        $record = [
-            'context' => [
+        $record = LogRecordMother::withContext( [
                 'message' => $aggregateMessage,
             ],
-        ];
+        );
 
         $result = (new InfoProcessor())($record);
 

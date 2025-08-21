@@ -5,15 +5,14 @@ namespace PcComponentes\DddLogging\Tests\ExceptionCatcher;
 
 use Pccomponentes\Apixception\Core\Exception\SerializableException;
 use PcComponentes\DddLogging\ExceptionCatcher\TraceOfExceptionProcessor;
+use PcComponentes\DddLogging\Tests\Mock\LogRecordMother;
 use PHPUnit\Framework\TestCase;
 
 final class TraceOfExceptionProcessorTest extends TestCase
 {
     public function testShouldReturnedRecordWithoutExceptionContext()
     {
-        $record = [
-            'context' => []
-        ];
+        $record = LogRecordMother::default();
 
         $recordResult = (new TraceOfExceptionProcessor())($record);
 
@@ -23,11 +22,11 @@ final class TraceOfExceptionProcessorTest extends TestCase
     public function testShouldReturnedRecordWithExceptionContext()
     {
         $exceptionMock = $this->createMock(\JsonSerializable::class);
-        $record = [
-            'context' => [
+        $record = LogRecordMother::withContext(
+            [
                 'exception' => $exceptionMock
             ]
-        ];
+        );
 
         $exceptionMock
             ->expects($this->atLeastOnce())
@@ -46,13 +45,12 @@ final class TraceOfExceptionProcessorTest extends TestCase
             'method 2'
         ];
 
-        $record = [
-            'context' => [
+        $record = LogRecordMother::withContext( [
                 'exception' => [
                     'trace' => $trace
                 ]
             ]
-        ];
+        );
 
         $recordResult = (new TraceOfExceptionProcessor())($record);
 

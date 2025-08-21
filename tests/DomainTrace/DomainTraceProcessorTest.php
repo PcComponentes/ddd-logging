@@ -5,6 +5,7 @@ namespace PcComponentes\DddLogging\Tests\DomainTrace;
 
 use PcComponentes\DddLogging\DomainTrace\DomainTraceProcessor;
 use PcComponentes\DddLogging\DomainTrace\Tracker;
+use PcComponentes\DddLogging\Tests\Mock\LogRecordMother;
 use PHPUnit\Framework\TestCase;
 
 final class DomainTraceProcessorTest extends TestCase
@@ -13,9 +14,7 @@ final class DomainTraceProcessorTest extends TestCase
     {
         $correlationId = "correlation_id_value";
         $replyTo = "reply_to_value";
-        $record = [
-            'context' => [],
-        ];
+        $record = LogRecordMother::default();
 
         $trackerMock = $this->createMock(Tracker::class);
         $trackerMock

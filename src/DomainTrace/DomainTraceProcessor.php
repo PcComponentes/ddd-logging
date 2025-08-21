@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\DomainTrace;
 
+use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 use PcComponentes\Ddd\Domain\Model\ValueObject\Uuid;
 use PcComponentes\Ddd\Util\Message\Message;
@@ -16,7 +17,7 @@ final class DomainTraceProcessor implements ProcessorInterface
         $this->tracker = $tracker;
     }
 
-    public function __invoke(array $record): array
+    public function __invoke(LogRecord $record)
     {
         $messageId = $this->getMessageId($record);
 
@@ -26,7 +27,7 @@ final class DomainTraceProcessor implements ProcessorInterface
         return $record;
     }
     
-    private function getMessageId(array $record): ?Uuid
+    private function getMessageId(LogRecord $record): ?Uuid
     {
         if (false === \array_key_exists('message', $record['context'])) {
             return null;

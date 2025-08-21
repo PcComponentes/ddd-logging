@@ -5,15 +5,14 @@ namespace PcComponentes\DddLogging\Tests\OccurredOn;
 
 use PcComponentes\Ddd\Domain\Model\DomainEvent;
 use PcComponentes\DddLogging\OccurredOn\OccurredOnProcessor;
+use PcComponentes\DddLogging\Tests\Mock\LogRecordMother;
 use PHPUnit\Framework\TestCase;
 
 final class OccurredOnProcessorTest extends TestCase
 {
     public function testShouldReturnedRecordWithoutMessage()
     {
-        $record = [
-            'context' => []
-        ];
+        $record = LogRecordMother::default();
 
         $result = (new OccurredOnProcessor())($record);
 
@@ -22,16 +21,16 @@ final class OccurredOnProcessorTest extends TestCase
 
     public function testShouldReturnedRecordWithOccurredOn()
     {
-        $record = [
-            'context' => [
+        $record = LogRecordMother::withContext(
+            [
                 'message' => [],
             ]
-        ];
+        );
 
         $result = (new OccurredOnProcessor())($record);
 
-        $this->assertArrayHasKey('occurred_on', $result);
-        $this->assertIsInt($result['occurred_on']);
+
+        $this->assertIsInt($result['extra']['occurred_on']);
     }
 
     public function testShouldReturnedRecordWithDomainEventOccurredOn()
@@ -55,20 +54,19 @@ final class OccurredOnProcessorTest extends TestCase
             ->method('occurredOn')
             ->willReturn($occurredOnMock);
 
-        $record = [
-            'context' => [
+        $record = LogRecordMother::withContext(
+             [
                 'message' => $domainEventMock
             ]
-        ];
+        );
 
         $result = (new OccurredOnProcessor())($record);
-        $this->assertArrayHasKey('occurred_on', $result);
         $this->assertEquals(
             $this->expectedOccurredOn(
                 $timestamp,
                 $milliseconds
             ),
-            $result['occurred_on']
+            $result['extra']['occurred_on']
         );
     }
 

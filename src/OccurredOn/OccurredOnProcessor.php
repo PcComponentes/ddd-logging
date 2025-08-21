@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\OccurredOn;
 
+use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 use PcComponentes\Ddd\Domain\Model\DomainEvent;
 
 final class OccurredOnProcessor implements ProcessorInterface
 {
-    public function __invoke(array $record): array
+    public function __invoke(LogRecord $record)
     {
         if (false === \array_key_exists('message', $record['context'])) {
             return $record;
@@ -22,12 +23,12 @@ final class OccurredOnProcessor implements ProcessorInterface
                 $message->occurredOn()->getTimestamp(),
                 $message->occurredOn()->format('v')
             );
-            $record['occurred_on'] = \intval($occurredOn);
+            $record['extra']['occurred_on'] = \intval($occurredOn);
 
             return $record;
         }
 
-        $record['occurred_on'] = \intval(
+        $record['extra']['occurred_on'] = \intval(
             \round(
                 \microtime(true) * 1000,
             )
