@@ -24,7 +24,9 @@ final class TraceOfExceptionProcessor implements ProcessorInterface
             $context['exception']['data'] = \json_encode($exception, \JSON_THROW_ON_ERROR);
         }
 
-        if (true === \array_key_exists('trace', $context['exception'])) {
+        if (true === \array_key_exists('trace', $context['exception'])
+            && false === \is_string($context['exception']['trace'])
+        ) {
             $context['exception']['trace'] = \json_encode(
                 $context['exception']['trace'],
                 \JSON_THROW_ON_ERROR,

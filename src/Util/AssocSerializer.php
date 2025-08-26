@@ -33,15 +33,34 @@ final class AssocSerializer
             'code' => $throwable->getCode(),
             'file' => $throwable->getFile(),
             'line' => $throwable->getLine(),
-            'trace' => $throwable->getTraceAsString(),
+            'trace' => self::trace($throwable),
         ];
+    }
+
+    private static function trace(\Throwable $throwable): string
+    {
+        $trace = $throwable->getTrace();
+        $traceLenght = \count($trace);
+        $pagLenght = \strlen((string)$traceLenght);
+
+        $result = [];
+
+        foreach ($trace as $key => $step) {
+            $result[] = \sprintf(
+                "#%s %s(%s)%s%s()",
+                \str_pad((string)$key, $pagLenght, '0', \STR_PAD_LEFT),
+                $step['file'] ?? '',
+                $step['line'] ?? '',
+                $step['type'] ?? '',
+                $step['function'] ?? '',
+            );
+        }
+
+        return \implode(\PHP_EOL, $result);
     }
 
     private static function basic($anything): array
     {
-        return \json_decode(
-            \json_encode($anything),
-            true,
-        );
+        return \json_decode(\json_encode($anything), true);
     }
 }

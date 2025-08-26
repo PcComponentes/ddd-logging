@@ -29,14 +29,17 @@ final class OccurredOnProcessorTest extends TestCase
 
         $result = (new OccurredOnProcessor())($record);
 
-
-        $this->assertIsInt($result['extra']['occurred_on']);
+        $this->assertTrue(false !== \DateTimeImmutable::createFromFormat(
+            'Y-m-d\TH:i:s.uP',
+            $result['extra']['occurred_on'],
+            new \DateTimeZone('UTC'),
+        ));
     }
 
     public function testShouldReturnedRecordWithDomainEventOccurredOn()
     {
         $timestamp = '1582912634.678';
-        $expectedTimestamp = '1582912634678';
+        $expectedValue = '2020-02-28T17:57:14.678000+00:00';
         $occurredOn = \DateTimeImmutable::createFromFormat('U.v', $timestamp, new \DateTimeZone('UTC'));
 
         $domainEventMock = $this->createMock(DomainEvent::class);
@@ -53,6 +56,6 @@ final class OccurredOnProcessorTest extends TestCase
 
         $result = (new OccurredOnProcessor())($record);
         $this->assertArrayHasKey('occurred_on', $result['extra']);
-        $this->assertEquals($expectedTimestamp, $result['extra']['occurred_on']);
+        $this->assertSame($expectedValue, $result['extra']['occurred_on']);
     }
 }
