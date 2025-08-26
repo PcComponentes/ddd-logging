@@ -14,11 +14,7 @@ final class OccurredOnProcessor implements ProcessorInterface
 
     public function __invoke(LogRecord $record): LogRecord
     {
-        if (false === \array_key_exists('message', $record['context'])) {
-            return $record;
-        }
-
-        $message = $record['context']['message'];
+        $message = $record['context']['message'] ?? null;
 
         if ($message instanceof DomainEvent) {
             $record['extra']['occurred_on'] = $message->occurredOn()->format(self::TIME_FORMAT);

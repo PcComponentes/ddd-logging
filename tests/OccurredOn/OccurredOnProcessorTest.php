@@ -10,22 +10,9 @@ use PHPUnit\Framework\TestCase;
 
 final class OccurredOnProcessorTest extends TestCase
 {
-    public function testShouldReturnedRecordWithoutMessage()
-    {
-        $record = LogRecordMother::default();
-
-        $result = (new OccurredOnProcessor())($record);
-
-        $this->assertEquals($record, $result);
-    }
-
     public function testShouldReturnedRecordWithOccurredOn()
     {
-        $record = LogRecordMother::withContext(
-            [
-                'message' => [],
-            ],
-        );
+        $record = LogRecordMother::default();
 
         $result = (new OccurredOnProcessor())($record);
 
