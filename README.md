@@ -11,3 +11,13 @@ La idea del middleware es muy simple. Para construirlo, requiere de cuatro depen
 
 ## Tracker
 Esta clase sirve para meter en el registro de logs el ID de una posible operación "padre", para posteriormente poder sacar trazas de tipo "árbol" por un sistema que sea capaz de centralizar estos logs.
+
+## Comandos de desarrollo
+
+### Ver versiones de paquetes instalados
+Para ver qué versiones de paquetes tiene instalado Composer, ejecuta:
+```bash
+make composer-show
+```
+
+Este comando mostrará una lista de todos los paquetes instalados junto con sus versiones actuales.

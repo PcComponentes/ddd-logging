@@ -5,81 +5,44 @@ namespace PcComponentes\DddLogging\Tests\OccurredOn;
 
 use PcComponentes\Ddd\Domain\Model\DomainEvent;
 use PcComponentes\DddLogging\OccurredOn\OccurredOnProcessor;
+use PcComponentes\DddLogging\Tests\Mock\LogRecordMother;
 use PHPUnit\Framework\TestCase;
 
 final class OccurredOnProcessorTest extends TestCase
 {
-    public function testShouldReturnedRecordWithoutMessage()
-    {
-        $record = [
-            'context' => []
-        ];
-
-        $result = (new OccurredOnProcessor())($record);
-
-        $this->assertEquals($record, $result);
-    }
-
     public function testShouldReturnedRecordWithOccurredOn()
     {
-        $record = [
-            'context' => [
-                'message' => [],
-            ]
-        ];
+        $record = LogRecordMother::default();
 
         $result = (new OccurredOnProcessor())($record);
 
-        $this->assertArrayHasKey('occurred_on', $result);
-        $this->assertIsInt($result['occurred_on']);
+        $this->assertTrue(false !== \DateTimeImmutable::createFromFormat(
+            'Y-m-d\TH:i:s.uP',
+            $result['extra']['occurred_on'],
+            new \DateTimeZone('UTC'),
+        ));
     }
 
     public function testShouldReturnedRecordWithDomainEventOccurredOn()
     {
-        $timestamp = 1582912634; //1582913896 876
-        $milliseconds = '678';
-        $occurredOnMock = $this->createMock(\DateTime::class);
-        $occurredOnMock
-            ->expects($this->once())
-            ->method('getTimestamp')
-            ->willReturn($timestamp);
-        $occurredOnMock
-            ->expects($this->once())
-            ->method('format')
-            ->with('v')
-            ->willReturn($milliseconds);
+        $timestamp = '1582912634.678';
+        $expectedValue = '2020-02-28T17:57:14.678000+00:00';
+        $occurredOn = \DateTimeImmutable::createFromFormat('U.v', $timestamp, new \DateTimeZone('UTC'));
 
         $domainEventMock = $this->createMock(DomainEvent::class);
         $domainEventMock
-            ->expects($this->exactly(2))
+            ->expects($this->once())
             ->method('occurredOn')
-            ->willReturn($occurredOnMock);
+            ->willReturn($occurredOn);
 
-        $record = [
-            'context' => [
-                'message' => $domainEventMock
-            ]
-        ];
+        $record = LogRecordMother::withContext(
+            [
+                'message' => $domainEventMock,
+            ],
+        );
 
         $result = (new OccurredOnProcessor())($record);
-        $this->assertArrayHasKey('occurred_on', $result);
-        $this->assertEquals(
-            $this->expectedOccurredOn(
-                $timestamp,
-                $milliseconds
-            ),
-            $result['occurred_on']
-        );
-    }
-
-    private function expectedOccurredOn(int $timestamp, string $milliseconds)
-    {
-        return \intval(
-            \sprintf(
-                '%d%d',
-                $timestamp,
-                $milliseconds
-            )
-        );
+        $this->assertArrayHasKey('occurred_on', $result['extra']);
+        $this->assertSame($expectedValue, $result['extra']['occurred_on']);
     }
 }

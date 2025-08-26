@@ -3,35 +3,26 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\OccurredOn;
 
+use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 use PcComponentes\Ddd\Domain\Model\DomainEvent;
+use PcComponentes\Ddd\Domain\Model\ValueObject\DateTimeValueObject;
 
 final class OccurredOnProcessor implements ProcessorInterface
 {
-    public function __invoke(array $record): array
-    {
-        if (false === \array_key_exists('message', $record['context'])) {
-            return $record;
-        }
+    private const TIME_FORMAT = 'Y-m-d\TH:i:s.uP';
 
-        $message = $record['context']['message'];
+    public function __invoke(LogRecord $record): LogRecord
+    {
+        $message = $record['context']['message'] ?? null;
 
         if ($message instanceof DomainEvent) {
-            $occurredOn = \sprintf(
-                '%d%d',
-                $message->occurredOn()->getTimestamp(),
-                $message->occurredOn()->format('v')
-            );
-            $record['occurred_on'] = \intval($occurredOn);
+            $record['extra']['occurred_on'] = $message->occurredOn()->format(self::TIME_FORMAT);
 
             return $record;
         }
 
-        $record['occurred_on'] = \intval(
-            \round(
-                \microtime(true) * 1000,
-            )
-        );
+        $record['extra']['occurred_on'] = DateTimeValueObject::now()->format(self::TIME_FORMAT);
 
         return $record;
     }

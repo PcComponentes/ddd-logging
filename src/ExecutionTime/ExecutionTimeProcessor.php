@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\ExecutionTime;
 
+use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 use PcComponentes\Ddd\Util\Message\Message;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -16,7 +17,7 @@ final class ExecutionTimeProcessor implements ProcessorInterface
         $this->stopwatch = $stopwatch;
     }
 
-    public function __invoke(array $record): array
+    public function __invoke(LogRecord $record): LogRecord
     {
         if (false === \array_key_exists('message', $record['context'])) {
             return $record;
@@ -40,7 +41,7 @@ final class ExecutionTimeProcessor implements ProcessorInterface
         try {
             $event = $this->stopwatch->getEvent(
                 $message->messageId()->value(),
-                );
+            );
 
             $duration = $event->getDuration();
         } catch (\LogicException $exception) {

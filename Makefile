@@ -24,6 +24,9 @@ bash:
 logs:
 		docker compose logs -f ${DOCKER_PHP_SERVICE}
 
+composer-show:
+		docker compose run --rm -u ${UID}:${GID} ${DOCKER_PHP_SERVICE} composer show
+
 .PHONY: tests
 tests:
 		docker compose run --rm -u ${UID}:${GID} ${DOCKER_PHP_SERVICE} phpunit
