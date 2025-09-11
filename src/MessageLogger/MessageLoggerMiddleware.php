@@ -23,24 +23,27 @@ final class MessageLoggerMiddleware implements MiddlewareInterface
 
     public function handle(Envelope $envelope, StackInterface $stack): Envelope
     {
-        $message = $this->messageFromEnvelope($envelope);
+        $message = $envelope->getMessage();
         $context = [
             'message' => $message,
-            'name' => $message::messageName(),
             'retry_count' => $this->extractEnvelopeRetryCount($envelope),
         ];
+
+        $messageName = $message instanceof Message
+            ? $message::messageName()
+            : '';
 
         try {
             $result = $stack->next()->handle($envelope, $stack);
             $this->logger->info(
-                $this->action->success() . ' "{name}"',
-                $context
+                \sprintf('%s "%s"', $this->action->success(), $messageName),
+                $context,
             );
         } catch (\Throwable $e) {
             $context['exception'] = $e;
             $this->logger->error(
-                $this->action->error() . ' "{name}"',
-                $context
+                \sprintf('%s "%s"', $this->action->error(), $messageName),
+                $context,
             );
 
             throw $e;
@@ -49,15 +52,12 @@ final class MessageLoggerMiddleware implements MiddlewareInterface
         return $result;
     }
 
-    private function messageFromEnvelope(Envelope $envelope): Message
-    {
-        return $envelope->getMessage();
-    }
-
     private function extractEnvelopeRetryCount(Envelope $envelope): int
     {
         $retryCountStamp = $envelope->last(RedeliveryStamp::class);
-        
-        return null !== $retryCountStamp ? $retryCountStamp->getRetryCount() : 0;
+
+        return null !== $retryCountStamp
+            ? $retryCountStamp->getRetryCount()
+            : 0;
     }
 }

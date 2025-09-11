@@ -25,6 +25,7 @@ final class NormalizeMessageProcessor implements ProcessorInterface
 
         $context['message'] = [
             'message_id' => $message->messageId()->value(),
+            'name' => $message::messageName(),
             'type' => $message::messageType(),
             'payload' => \json_encode($message->messagePayload()),
         ];
