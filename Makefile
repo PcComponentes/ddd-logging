@@ -1,6 +1,6 @@
+export UID := $(shell id -u)
+export GID := $(shell id -g)
 
-UID=$(shell id -u)
-GID=$(shell id -g)
 DOCKER_PHP_SERVICE=php
 
 start: erase cache-folders build composer-install bash
