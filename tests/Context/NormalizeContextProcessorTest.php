@@ -56,35 +56,35 @@ final class NormalizeContextProcessorTest extends TestCase
         $this->assertArrayHasKey('payload', $result['context']['message']);
     }
 
-    public function testShouldReturnedRecordWithSmallBase64Payload()
+    public function testShouldReturnedRecordWithSmallPayloadWithoutTruncation()
     {
-        $base64 = \base64_encode('small-payload');
+        $smallString = 'small-payload';
 
         $result = (new NormalizeMessageProcessor())($this->createRecordWithPayload([
-            'attachment' => $base64,
+            'attachment' => $smallString,
         ]));
 
         $payload = $this->decodePayload($result);
 
-        $this->assertSame($base64, $payload['attachment']);
+        $this->assertSame($smallString, $payload['attachment']);
     }
 
-    public function testShouldReturnedRecordWithTruncatedLargeBase64Payload()
+    public function testShouldReturnedRecordWithTruncatedLargeStringPayload()
     {
-        $base64 = \base64_encode(\str_repeat('a', 14000));
+        $largeString = \str_repeat('a', 18000);
 
         $result = (new NormalizeMessageProcessor())($this->createRecordWithPayload([
-            'attachment' => $base64,
+            'attachment' => $largeString,
         ]));
 
         $payload = $this->decodePayload($result);
 
-        $this->assertStringStartsWith(\substr($base64, 0, 128), $payload['attachment']);
-        $this->assertStringContainsString('[base64 truncated; original_length=', $payload['attachment']);
-        $this->assertStringNotContainsString($base64, $payload['attachment']);
+        $this->assertStringStartsWith(\substr($largeString, 0, 128), $payload['attachment']);
+        $this->assertStringContainsString('[string truncated; original_length=', $payload['attachment']);
+        $this->assertStringNotContainsString($largeString, $payload['attachment']);
     }
 
-    public function testShouldReturnedRecordWithLargeNonBase64PayloadWithoutTruncation()
+    public function testShouldReturnedRecordWithLargeNonBase64PayloadTruncated()
     {
         $largeString = \str_repeat('x-', 9000);
 
@@ -94,26 +94,28 @@ final class NormalizeContextProcessorTest extends TestCase
 
         $payload = $this->decodePayload($result);
 
-        $this->assertSame($largeString, $payload['attachment']);
+        $this->assertStringStartsWith(\substr($largeString, 0, 128), $payload['attachment']);
+        $this->assertStringContainsString('[string truncated; original_length=', $payload['attachment']);
+        $this->assertStringNotContainsString($largeString, $payload['attachment']);
     }
 
-    public function testShouldReturnedRecordWithTruncatedNestedLargeBase64Payload()
+    public function testShouldReturnedRecordWithTruncatedNestedLargeStringPayload()
     {
-        $base64 = \base64_encode(\str_repeat('b', 14000));
+        $largeString = \str_repeat('b', 18000);
 
         $result = (new NormalizeMessageProcessor())($this->createRecordWithPayload([
             'evidence' => [
-                'attachment' => $base64,
+                'attachment' => $largeString,
             ],
         ]));
 
         $payload = $this->decodePayload($result);
 
-        $this->assertStringStartsWith(\substr($base64, 0, 128), $payload['evidence']['attachment']);
-        $this->assertStringContainsString('[base64 truncated; original_length=', $payload['evidence']['attachment']);
+        $this->assertStringStartsWith(\substr($largeString, 0, 128), $payload['evidence']['attachment']);
+        $this->assertStringContainsString('[string truncated; original_length=', $payload['evidence']['attachment']);
     }
 
-    public function testShouldReturnedRecordWithTruncatedLargeBase64DataUriPayload()
+    public function testShouldReturnedRecordWithTruncatedLargeDataUriPayload()
     {
         $base64 = \base64_encode(\str_repeat('c', 14000));
         $dataUri = 'data:image/png;base64,' . $base64;
@@ -124,8 +126,8 @@ final class NormalizeContextProcessorTest extends TestCase
 
         $payload = $this->decodePayload($result);
 
-        $this->assertStringStartsWith('data:image/png;base64,' . \substr($base64, 0, 128), $payload['attachment']);
-        $this->assertStringContainsString('[base64 truncated; original_length=', $payload['attachment']);
+        $this->assertStringStartsWith(\substr($dataUri, 0, 128), $payload['attachment']);
+        $this->assertStringContainsString('[string truncated; original_length=', $payload['attachment']);
         $this->assertStringNotContainsString($dataUri, $payload['attachment']);
     }
 

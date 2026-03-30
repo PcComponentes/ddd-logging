@@ -10,10 +10,8 @@ use PcComponentes\Ddd\Util\Message\Message;
 
 final class NormalizeMessageProcessor implements ProcessorInterface
 {
-    private const BASE64_TRUNCATION_THRESHOLD = 16384;
-    private const BASE64_PREVIEW_LENGTH = 128;
-    private const BASE64_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-    private const BASE64_DATA_URI_SEPARATOR = ';base64,';
+    private const STRING_TRUNCATION_THRESHOLD = 16384;
+    private const STRING_PREVIEW_LENGTH = 128;
 
     public function __invoke(LogRecord $record): LogRecord
     {
@@ -58,70 +56,21 @@ final class NormalizeMessageProcessor implements ProcessorInterface
             return $this->sanitizePayloadForLogging($value);
         }
 
-        if (false === \is_string($value) || self::BASE64_TRUNCATION_THRESHOLD >= \strlen($value)) {
+        if (false === \is_string($value) || self::STRING_TRUNCATION_THRESHOLD >= \strlen($value)) {
             return $value;
         }
 
-        [$prefix, $candidate] = $this->extractBase64Candidate($value);
-        $normalizedCandidate = $this->normalizeBase64Candidate($candidate);
-
-        if (false === $this->shouldTruncateBase64Candidate($normalizedCandidate)) {
-            return $value;
-        }
-
-        return $this->formatTruncatedBase64($prefix, $normalizedCandidate, \strlen($value));
+        return $this->formatTruncatedString($value);
     }
 
-    /** @return array{string, string} */
-    private function extractBase64Candidate(string $value): array
+    private function formatTruncatedString(string $value): string
     {
-        if (false === \str_starts_with($value, 'data:')) {
-            return ['', $value];
-        }
-
-        $separatorPosition = \strpos($value, self::BASE64_DATA_URI_SEPARATOR);
-
-        if (false === $separatorPosition) {
-            return ['', $value];
-        }
-
-        $payloadPosition = $separatorPosition + \strlen(self::BASE64_DATA_URI_SEPARATOR);
-
-        return [
-            \substr($value, 0, $payloadPosition),
-            \substr($value, $payloadPosition),
-        ];
-    }
-
-    private function normalizeBase64Candidate(string $candidate): string
-    {
-        return \str_replace(["\r", "\n"], '', \trim($candidate));
-    }
-
-    private function shouldTruncateBase64Candidate(string $candidate): bool
-    {
-        $candidateLength = \strlen($candidate);
-
-        if (self::BASE64_TRUNCATION_THRESHOLD >= $candidateLength || 0 !== $candidateLength % 4) {
-            return false;
-        }
-
-        if ($candidateLength !== \strspn($candidate, self::BASE64_CHARACTERS)) {
-            return false;
-        }
-
-        return false !== \base64_decode($candidate, true);
-    }
-
-    private function formatTruncatedBase64(string $prefix, string $candidate, int $originalLength): string
-    {
-        $preview = \substr($candidate, 0, self::BASE64_PREVIEW_LENGTH);
+        $preview = \substr($value, 0, self::STRING_PREVIEW_LENGTH);
 
         return \sprintf(
-            '%s%s...[base64 truncated; original_length=%d]',
-            $prefix,
+            '%s...[string truncated; original_length=%d]',
             $preview,
-            $originalLength,
+            \strlen($value),
         );
     }
 }
