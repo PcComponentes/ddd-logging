@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\Tests\Context;
 
+use Monolog\LogRecord;
 use PcComponentes\Ddd\Domain\Model\ValueObject\DateTimeValueObject;
 use PcComponentes\Ddd\Domain\Model\ValueObject\Uuid;
-use PcComponentes\Ddd\Util\Message\AggregateMessage;
-use PcComponentes\Ddd\Util\Message\SimpleMessage;
 use PcComponentes\Ddd\Util\Message\ValueObject\AggregateId;
 use PcComponentes\DddLogging\Context\NormalizeMessageProcessor;
 use PcComponentes\DddLogging\Tests\Mock\LogRecordMother;
@@ -57,6 +56,81 @@ final class NormalizeContextProcessorTest extends TestCase
         $this->assertArrayHasKey('payload', $result['context']['message']);
     }
 
+    public function testShouldReturnedRecordWithSmallPayloadWithoutTruncation()
+    {
+        $smallString = 'small-payload';
+
+        $result = (new NormalizeMessageProcessor())($this->createRecordWithPayload([
+            'attachment' => $smallString,
+        ]));
+
+        $payload = $this->decodePayload($result);
+
+        $this->assertSame($smallString, $payload['attachment']);
+    }
+
+    public function testShouldReturnedRecordWithTruncatedLargeStringPayload()
+    {
+        $largeString = \str_repeat('a', 18000);
+
+        $result = (new NormalizeMessageProcessor())($this->createRecordWithPayload([
+            'attachment' => $largeString,
+        ]));
+
+        $payload = $this->decodePayload($result);
+
+        $this->assertStringStartsWith(\substr($largeString, 0, 128), $payload['attachment']);
+        $this->assertStringContainsString('[string truncated; original_length=', $payload['attachment']);
+        $this->assertStringNotContainsString($largeString, $payload['attachment']);
+    }
+
+    public function testShouldReturnedRecordWithLargeNonBase64PayloadTruncated()
+    {
+        $largeString = \str_repeat('x-', 9000);
+
+        $result = (new NormalizeMessageProcessor())($this->createRecordWithPayload([
+            'attachment' => $largeString,
+        ]));
+
+        $payload = $this->decodePayload($result);
+
+        $this->assertStringStartsWith(\substr($largeString, 0, 128), $payload['attachment']);
+        $this->assertStringContainsString('[string truncated; original_length=', $payload['attachment']);
+        $this->assertStringNotContainsString($largeString, $payload['attachment']);
+    }
+
+    public function testShouldReturnedRecordWithTruncatedNestedLargeStringPayload()
+    {
+        $largeString = \str_repeat('b', 18000);
+
+        $result = (new NormalizeMessageProcessor())($this->createRecordWithPayload([
+            'evidence' => [
+                'attachment' => $largeString,
+            ],
+        ]));
+
+        $payload = $this->decodePayload($result);
+
+        $this->assertStringStartsWith(\substr($largeString, 0, 128), $payload['evidence']['attachment']);
+        $this->assertStringContainsString('[string truncated; original_length=', $payload['evidence']['attachment']);
+    }
+
+    public function testShouldReturnedRecordWithTruncatedLargeDataUriPayload()
+    {
+        $base64 = \base64_encode(\str_repeat('c', 14000));
+        $dataUri = 'data:image/png;base64,' . $base64;
+
+        $result = (new NormalizeMessageProcessor())($this->createRecordWithPayload([
+            'attachment' => $dataUri,
+        ]));
+
+        $payload = $this->decodePayload($result);
+
+        $this->assertStringStartsWith(\substr($dataUri, 0, 128), $payload['attachment']);
+        $this->assertStringContainsString('[string truncated; original_length=', $payload['attachment']);
+        $this->assertStringNotContainsString($dataUri, $payload['attachment']);
+    }
+
     public function testShouldReturnedWithAggregateMessageInfo()
     {
         $stringMessageUuid = '04e6de1e-c5b9-42fc-ad43-e1ec4e64e121';
@@ -92,50 +166,19 @@ final class NormalizeContextProcessorTest extends TestCase
         $this->assertArrayHasKey('aggregate_version', $result['context']['message']);
         $this->assertEquals($aggregateMessage->aggregateVersion(), $result['context']['message']['aggregate_version']);
     }
-}
 
-class SimpleMessageMock extends SimpleMessage
-{
-    public static function messageName(): string
+    private function decodePayload(LogRecord $record): array
     {
-        return 'message_name';
+        return \json_decode($record->context['message']['payload'], true, 512, \JSON_THROW_ON_ERROR);
     }
 
-    public static function messageVersion(): string
+    private function createRecordWithPayload(array $payload): LogRecord
     {
-        return 'message_version';
-    }
-
-    public static function messageType(): string
-    {
-        return 'message_type';
-    }
-
-    protected function assertPayload(): void
-    {
-        // TODO: Implement assertPayload() method.
-    }
-}
-
-class AggregateMessageMock extends AggregateMessage
-{
-    public static function messageName(): string
-    {
-        return 'aggregate_message_name';
-    }
-
-    public static function messageVersion(): string
-    {
-        return 'aggregate_message_version';
-    }
-
-    public static function messageType(): string
-    {
-        return 'aggregate_message_type';
-    }
-
-    protected function assertPayload(): void
-    {
-        // TODO: Implement assertPayload() method.
+        return LogRecordMother::withContext([
+            'message' => SimpleMessageMock::fromPayload(
+                Uuid::from('04e6de1e-c5b9-42fc-ad43-e1ec4e64e121'),
+                $payload,
+            ),
+        ]);
     }
 }

@@ -10,13 +10,16 @@ use PcComponentes\Ddd\Util\Message\Message;
 
 final class NormalizeMessageProcessor implements ProcessorInterface
 {
+    private const STRING_TRUNCATION_THRESHOLD = 16384;
+    private const STRING_PREVIEW_LENGTH = 128;
+
     public function __invoke(LogRecord $record): LogRecord
     {
-        if (false === \array_key_exists('message', $record['context'])) {
+        if (false === \array_key_exists('message', $record->context)) {
             return $record;
         }
 
-        $context = $record['context'];
+        $context = $record->context;
         $message = $context['message'];
 
         if (false === ($message instanceof Message)) {
@@ -27,7 +30,7 @@ final class NormalizeMessageProcessor implements ProcessorInterface
             'message_id' => $message->messageId()->value(),
             'name' => $message::messageName(),
             'type' => $message::messageType(),
-            'payload' => \json_encode($message->messagePayload()),
+            'payload' => \json_encode($this->sanitizePayloadForLogging($message->messagePayload())),
         ];
 
         if ($message instanceof AggregateMessage) {
@@ -35,13 +38,39 @@ final class NormalizeMessageProcessor implements ProcessorInterface
             $context['message']['aggregate_version'] = $message->aggregateVersion();
         }
 
-        return new LogRecord(
-            $record->datetime,
-            $record->channel,
-            $record->level,
-            $record->message,
-            $context,
-            $record->extra,
+        return $record->with(context: $context);
+    }
+
+    private function sanitizePayloadForLogging(array $payload): array
+    {
+        foreach ($payload as $key => $value) {
+            $payload[$key] = $this->sanitizeValueForLogging($value);
+        }
+
+        return $payload;
+    }
+
+    private function sanitizeValueForLogging(mixed $value): mixed
+    {
+        if (\is_array($value)) {
+            return $this->sanitizePayloadForLogging($value);
+        }
+
+        if (false === \is_string($value) || self::STRING_TRUNCATION_THRESHOLD >= \strlen($value)) {
+            return $value;
+        }
+
+        return $this->formatTruncatedString($value);
+    }
+
+    private function formatTruncatedString(string $value): string
+    {
+        $preview = \substr($value, 0, self::STRING_PREVIEW_LENGTH);
+
+        return \sprintf(
+            '%s...[string truncated; original_length=%d]',
+            $preview,
+            \strlen($value),
         );
     }
 }

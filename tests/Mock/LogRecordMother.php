@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace PcComponentes\DddLogging\Tests\Mock;
 
@@ -21,9 +22,13 @@ class LogRecordMother extends LogRecord
 
     public static function withContext(array $context): self
     {
-        $logRecord = LogRecordMother::default();
-        $logRecord->context = $context;
-
-        return $logRecord;
+        return new self(
+            new \DateTimeImmutable('now'),
+            'channel',
+            Level::Info,
+            '',
+            $context,
+            [],
+        );
     }
 }
