@@ -71,6 +71,7 @@ final class Tracker
     public function assignReplyTo(string $replyTo, ?Uuid $messageId = null): void
     {
         $this->replyTo = $replyTo;
+
         if (null === $messageId) {
             return;
         }

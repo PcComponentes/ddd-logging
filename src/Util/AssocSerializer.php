@@ -7,22 +7,22 @@ final class AssocSerializer
 {
     public static function from($anything): array
     {
-        switch (true) {
-            case $anything instanceof \Throwable:
-                return self::throwable($anything);
-            case \is_array($anything):
-                return \array_map(
-                    static function ($item) {
-                        return self::from($item);
-                    },
-                    $anything
-                );
-            case $anything instanceof \JsonSerializable:
-            case \is_object($anything):
-                return self::basic($anything);
-            default:
-                return ['value' => $anything];
+        if ($anything instanceof \Throwable) {
+            return self::throwable($anything);
         }
+
+        if (\is_array($anything)) {
+            return \array_map(
+                static fn ($item) => self::from($item),
+                $anything,
+            );
+        }
+
+        if ($anything instanceof \JsonSerializable || \is_object($anything)) {
+            return self::basic($anything);
+        }
+
+        return ['value' => $anything];
     }
 
     private static function throwable(\Throwable $throwable): array
@@ -30,7 +30,7 @@ final class AssocSerializer
         return [
             'class' => \get_class($throwable),
             'message' => $throwable->getMessage(),
-            'code' => $throwable->getCode(),
+            'code' => (string)$throwable->getCode(),
             'file' => $throwable->getFile(),
             'line' => $throwable->getLine(),
             'trace' => self::trace($throwable),
