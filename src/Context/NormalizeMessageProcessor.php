@@ -30,7 +30,10 @@ final class NormalizeMessageProcessor implements ProcessorInterface
             'message_id' => $message->messageId()->value(),
             'name' => $message::messageName(),
             'type' => $message::messageType(),
-            'payload' => \json_encode($this->sanitizePayloadForLogging($message->messagePayload())),
+            'payload' => \json_encode(
+                $this->sanitizePayloadForLogging($message->messagePayload()),
+                \JSON_INVALID_UTF8_SUBSTITUTE | \JSON_PARTIAL_OUTPUT_ON_ERROR,
+            ),
         ];
 
         if ($message instanceof AggregateMessage) {
@@ -65,7 +68,7 @@ final class NormalizeMessageProcessor implements ProcessorInterface
 
     private function formatTruncatedString(string $value): string
     {
-        $preview = \substr($value, 0, self::STRING_PREVIEW_LENGTH);
+        $preview = \mb_strcut($value, 0, self::STRING_PREVIEW_LENGTH, 'UTF-8');
 
         return \sprintf(
             '%s...[string truncated; original_length=%d]',

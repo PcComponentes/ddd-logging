@@ -6,5 +6,6 @@ namespace PcComponentes\DddLogging\MessageLogger;
 interface Action
 {
     public function success(): string;
+
     public function error(): string;
 }

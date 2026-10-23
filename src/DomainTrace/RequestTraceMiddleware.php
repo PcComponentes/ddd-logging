@@ -27,6 +27,7 @@ final class RequestTraceMiddleware implements MiddlewareInterface
         $this->assertCorrelationId();
 
         $request = $this->requestStack->getCurrentRequest();
+
         if (null === $request) {
             return $stack->next()->handle($envelope, $stack);
         }
@@ -34,11 +35,13 @@ final class RequestTraceMiddleware implements MiddlewareInterface
         $message = $this->messageFromEnvelope($envelope);
 
         $correlationId = $this->correlationIdFromRequest($request);
+
         if (null !== $correlationId) {
             $this->tracker->assignCorrelationId($correlationId, $message->messageId());
         }
 
         $replyTo = $this->replyToFromRequest($request);
+
         if (null !== $replyTo) {
             $this->tracker->assignReplyTo($replyTo, $message->messageId());
         }
@@ -58,7 +61,7 @@ final class RequestTraceMiddleware implements MiddlewareInterface
         }
 
         $this->tracker->assignCorrelationId(
-            Uuid::v4()->value()
+            Uuid::v4()->value(),
         );
     }
 

@@ -99,6 +99,75 @@ final class NormalizeContextProcessorTest extends TestCase
         $this->assertStringNotContainsString($largeString, $payload['attachment']);
     }
 
+    /**
+     * @dataProvider utf8TruncationProvider
+     */
+    public function testShouldTruncateLargeUtf8StringWithoutSplittingCharacters(
+        string $prefix,
+        string $character,
+        string $expectedPreview
+    ) {
+        $largeString = $prefix . $character . \str_repeat('b', 18000);
+
+        $result = (new NormalizeMessageProcessor())($this->createRecordWithPayload([
+            'address' => $largeString,
+        ]));
+
+        $this->assertIsString($result['context']['message']['payload']);
+        $payload = $this->decodePayload($result);
+
+        $this->assertSame(
+            $expectedPreview . '...[string truncated; original_length=' . \strlen($largeString) . ']',
+            $payload['address'],
+        );
+    }
+
+    public function utf8TruncationProvider(): array
+    {
+        return [
+            'two-byte character crossing boundary' => [\str_repeat('a', 127), 'é', \str_repeat('a', 127)],
+            'three-byte character crossing boundary' => [\str_repeat('a', 127), '€', \str_repeat('a', 127)],
+            'four-byte character crossing boundary' => [\str_repeat('a', 127), '😀', \str_repeat('a', 127)],
+            'two-byte character fitting boundary' => [\str_repeat('a', 126), 'é', \str_repeat('a', 126) . 'é'],
+            'three-byte character fitting boundary' => [\str_repeat('a', 125), '€', \str_repeat('a', 125) . '€'],
+            'four-byte character fitting boundary' => [\str_repeat('a', 124), '😀', \str_repeat('a', 124) . '😀'],
+        ];
+    }
+
+    public function testShouldReplaceInvalidUtf8WithoutLosingOtherPayloadFields()
+    {
+        $result = (new NormalizeMessageProcessor())($this->createRecordWithPayload([
+            'address' => "street \xB1 name",
+            'city' => 'Madrid',
+        ]));
+
+        $this->assertIsString($result['context']['message']['payload']);
+        $this->assertSame([
+            'address' => "street \u{FFFD} name",
+            'city' => 'Madrid',
+        ], $this->decodePayload($result));
+    }
+
+    public function testShouldKeepSerializablePayloadFieldsWhenJsonEncodingFails()
+    {
+        $resource = \fopen('php://memory', 'r');
+
+        try {
+            $result = (new NormalizeMessageProcessor())($this->createRecordWithPayload([
+                'attachment' => $resource,
+                'address' => 'street name',
+            ]));
+        } finally {
+            \fclose($resource);
+        }
+
+        $this->assertIsString($result['context']['message']['payload']);
+        $this->assertSame([
+            'attachment' => null,
+            'address' => 'street name',
+        ], $this->decodePayload($result));
+    }
+
     public function testShouldReturnedRecordWithTruncatedNestedLargeStringPayload()
     {
         $largeString = \str_repeat('b', 18000);

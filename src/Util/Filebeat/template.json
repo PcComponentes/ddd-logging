@@ -21,7 +21,7 @@
                 }
               },
               "code": {
-                "type": "integer"
+                "type": "keyword"
               },
               "file": {
                 "type": "text",

@@ -22,7 +22,7 @@ final class MessageTraceMiddleware implements MiddlewareInterface
         $message = $this->messageFromEnvelope($envelope);
 
         $this->tracker->assignReplyTo(
-            $message->messageId()->value()
+            $message->messageId()->value(),
         );
 
         return $stack->next()->handle($envelope, $stack);
